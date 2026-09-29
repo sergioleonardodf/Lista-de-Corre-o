@@ -1,3 +1,6 @@
+Aqui está o código completo — já está tudo num arquivo só, sem dependências externas:
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -61,36 +64,49 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
-header {
-  padding: 16px 16px 0;
-  position: sticky;
-  top: env(safe-area-inset-top, 0px);
-  background: var(--bg);
-  z-index: 5;
-}
-h1 {
-  font-size: 1.15rem;
-  margin: 4px 0 12px;
-  font-weight: 700;
-}
-.tabs {
+.app-shell {
   display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
+  align-items: stretch;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+aside.sidebar {
+  flex: 0 0 auto;
+  width: 108px;
+  padding: 12px 8px;
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+aside.sidebar .titulo {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 4px;
+  line-height: 1.3;
 }
 .tab {
-  flex: 0 0 auto;
-  padding: 8px 14px;
-  border-radius: 999px;
+  width: 100%;
+  padding: 10px 6px;
+  border-radius: 10px;
   border: 1px solid var(--border);
-  background: var(--card);
+  background: var(--bg);
   color: var(--text);
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  white-space: nowrap;
+  text-align: center;
+  line-height: 1.25;
 }
 .tab.active {
   background: var(--accent);
@@ -98,26 +114,28 @@ h1 {
   border-color: var(--accent);
 }
 main {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 16px;
+  flex: 1;
+  min-width: 0;
+  padding: 12px;
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 12px;
+  align-content: start;
 }
-@media (min-width: 720px) {
+@media (min-width: 640px) {
   main { grid-template-columns: 1fr 1fr; }
 }
 .card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 12px;
   box-shadow: var(--shadow);
-  padding: 14px;
+  padding: 10px 12px;
 }
 .card h2 {
-  font-size: 0.95rem;
-  margin: 0 0 10px;
+  font-size: 0.82rem;
+  margin: 0 0 6px;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: .04em;
@@ -125,24 +143,61 @@ main {
 .row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 6px;
-  border-radius: 10px;
+  gap: 8px;
+  padding: 5px 4px;
+  border-radius: 8px;
+  font-size: 0.88rem;
 }
 .row + .row { border-top: 1px solid var(--border); }
 .row input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   flex: 0 0 auto;
   accent-color: var(--accent);
 }
 .row .nome { font-weight: 600; flex: 1; }
 .row .turma {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--muted);
   background: var(--chip);
-  padding: 2px 8px;
+  padding: 1px 7px;
   border-radius: 999px;
+}
+.add-aluno {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+.add-aluno input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 9px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+.add-aluno select {
+  padding: 7px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+.add-aluno button {
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
 }
 .fila-row { position: relative; }
 .fila-row.corrigido { background: var(--green); border-radius: 10px; }
@@ -217,24 +272,34 @@ footer {
 </style>
 </head>
 <body>
-<header>
-  <h1>📋 Fila de Correção - Mr Léo</h1>
-  <div class="tabs" id="tabs"></div>
-</header>
-<main>
-  <section class="card">
-    <h2>Alunos</h2>
-    <div id="lista-alunos"></div>
-  </section>
-  <section class="card">
-    <h2>Fila de Espera</h2>
-    <div id="lista-fila"></div>
-    <div class="limpar-wrap">
-      <button class="limpar" id="btn-limpar">Limpar Fila</button>
-    </div>
-  </section>
-</main>
-<footer id="rodape"></footer>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="titulo">📋 Dias</div>
+    <div id="tabs"></div>
+  </aside>
+  <main>
+    <section class="card">
+      <h2>Alunos</h2>
+      <div id="lista-alunos"></div>
+      <div class="add-aluno">
+        <input type="text" id="novo-aluno-nome" placeholder="Nome do aluno">
+        <select id="novo-aluno-turma">
+          <option value="">Turma</option>
+          <option value="4º">4º</option>
+          <option value="5º">5º</option>
+        </select>
+        <button id="btn-add-aluno">+ Adicionar</button>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Fila de Espera</h2>
+      <div id="lista-fila"></div>
+      <div class="limpar-wrap">
+        <button class="limpar" id="btn-limpar">Limpar Fila</button>
+      </div>
+    </section>
+  </main>
+</div>
 
 <div class="modal-overlay hidden" id="modal">
   <div class="modal">
@@ -247,43 +312,67 @@ footer {
 </div>
 
 <script>
-const DIAS = {"SEGUNDA": {"label": "Segunda-feira", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "TERÇA": {"label": "Terça-feira", "alunos": [{"nome": "AMANDA", "turma": "5º"}, {"nome": "BÁRBARA", "turma": "5º"}, {"nome": "BENÍCIO", "turma": "5º"}, {"nome": "EVA", "turma": "5º"}, {"nome": "JÚLIA", "turma": "5º"}, {"nome": "LAURA", "turma": "5º"}, {"nome": "LUCAS KALUME", "turma": "5º"}, {"nome": "MARIANA", "turma": "5º"}, {"nome": "MELISSA", "turma": "5º"}, {"nome": "MUGUEL CADIMA", "turma": "5º"}, {"nome": "NICOLAS", "turma": "5º"}, {"nome": "OLÍVIA", "turma": "5º"}, {"nome": "OTHO", "turma": "5º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUARTA": {"label": "Quarta-feira", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "FELIPE", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUINTA": {"label": "Quinta-feira", "alunos": [{"nome": "DANIELA", "turma": "4º"}, {"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}};
+const DIAS = {"SEGUNDA": {"label": "Segunda-feira", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL BAUTE", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "TERÇA": {"label": "Terça-feira", "alunos": [{"nome": "AMANDA", "turma": "5º"}, {"nome": "BÁRBARA", "turma": "5º"}, {"nome": "BENÍCIO", "turma": "5º"}, {"nome": "EVA", "turma": "5º"}, {"nome": "JÚLIA", "turma": "5º"}, {"nome": "LAURA", "turma": "5º"}, {"nome": "LUCAS KALUME", "turma": "5º"}, {"nome": "MARIANA", "turma": "5º"}, {"nome": "MELISSA", "turma": "5º"}, {"nome": "MIGUEL CADIMA", "turma": "5º"}, {"nome": "NICOLAS", "turma": "5º"}, {"nome": "OLÍVIA", "turma": "5º"}, {"nome": "OTHO", "turma": "5º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUARTA": {"label": "Quarta-feira", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "FELIPE", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUINTA": {"label": "Quinta-feira", "alunos": [{"nome": "DANIELA", "turma": "4º"}, {"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}};
 const ORDEM_DIAS = Object.keys(DIAS);
 
 let diaAtual = ORDEM_DIAS[0];
 let filas = {};
-ORDEM_DIAS.forEach(d => filas[d] = []);
+let extras = {};
+ORDEM_DIAS.forEach(d => { filas[d] = []; extras[d] = []; });
 let db = null;
-const writeChain = {};
+const writeChainFila = {};
+const writeChainExtras = {};
 
-function chaveLocal(dia) { return "fila_" + dia; }
+function chaveLocalFila(dia) { return "fila_" + dia; }
+function chaveLocalExtras(dia) { return "extras_" + dia; }
 
 function carregarLocal() {
   ORDEM_DIAS.forEach(dia => {
     try {
-      const raw = localStorage.getItem(chaveLocal(dia));
+      const raw = localStorage.getItem(chaveLocalFila(dia));
       if (raw) filas[dia] = JSON.parse(raw);
+    } catch (e) {}
+    try {
+      const rawExtras = localStorage.getItem(chaveLocalExtras(dia));
+      if (rawExtras) extras[dia] = JSON.parse(rawExtras);
     } catch (e) {}
   });
 }
 
-function salvarLocal(dia) {
-  try { localStorage.setItem(chaveLocal(dia), JSON.stringify(filas[dia])); } catch (e) {}
+function salvarLocalFila(dia) {
+  try { localStorage.setItem(chaveLocalFila(dia), JSON.stringify(filas[dia])); } catch (e) {}
+}
+
+function salvarLocalExtras(dia) {
+  try { localStorage.setItem(chaveLocalExtras(dia), JSON.stringify(extras[dia])); } catch (e) {}
 }
 
 function salvarFila(dia) {
-  salvarLocal(dia);
+  salvarLocalFila(dia);
   if (!db) return;
-  const prev = writeChain[dia] || Promise.resolve();
-  writeChain[dia] = prev
+  const prev = writeChainFila[dia] || Promise.resolve();
+  writeChainFila[dia] = prev
     .then(() => db.doc("filas/" + dia).set({ entries: filas[dia] }))
     .catch(err => console.error("Erro ao salvar fila:", err));
+}
+
+function salvarExtras(dia) {
+  salvarLocalExtras(dia);
+  if (!db) return;
+  const prev = writeChainExtras[dia] || Promise.resolve();
+  writeChainExtras[dia] = prev
+    .then(() => db.doc("extras/" + dia).set({ alunos: extras[dia] }))
+    .catch(err => console.error("Erro ao salvar alunos adicionados:", err));
 }
 
 function carinhaAleatoria(dia) {
   const pool = DIAS[dia].carinhas || [];
   if (pool.length === 0) return "";
   return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function alunosDoDia(dia) {
+  return DIAS[dia].alunos.concat(extras[dia] || []);
 }
 
 function estaNaFila(dia, nome) {
@@ -305,7 +394,7 @@ function renderTabs() {
 function renderAlunos() {
   const wrap = document.getElementById("lista-alunos");
   wrap.innerHTML = "";
-  DIAS[diaAtual].alunos.forEach(aluno => {
+  alunosDoDia(diaAtual).forEach(aluno => {
     const row = document.createElement("div");
     row.className = "row";
     const chk = document.createElement("input");
@@ -390,6 +479,23 @@ function onToggleCorrigido(idx, marcado) {
   salvarFila(diaAtual);
 }
 
+document.getElementById("btn-add-aluno").onclick = () => {
+  const inputNome = document.getElementById("novo-aluno-nome");
+  const inputTurma = document.getElementById("novo-aluno-turma");
+  const nome = inputNome.value.trim().toUpperCase();
+  if (!nome) { inputNome.focus(); return; }
+  const jaExiste = alunosDoDia(diaAtual).some(a => a.nome === nome);
+  if (jaExiste) { inputNome.value = ""; return; }
+  extras[diaAtual] = (extras[diaAtual] || []).concat([{ nome: nome, turma: inputTurma.value || "" }]);
+  salvarExtras(diaAtual);
+  inputNome.value = "";
+  inputTurma.value = "";
+  renderAlunos();
+};
+document.getElementById("novo-aluno-nome").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("btn-add-aluno").click();
+});
+
 const modal = document.getElementById("modal");
 document.getElementById("btn-limpar").onclick = () => modal.classList.remove("hidden");
 document.getElementById("modal-cancelar").onclick = () => modal.classList.add("hidden");
@@ -414,14 +520,24 @@ async function initDb() {
     return;
   }
   ORDEM_DIAS.forEach(dia => {
-    const ref = db.doc("filas/" + dia);
-    ref.onSnapshot(
+    const refFila = db.doc("filas/" + dia);
+    refFila.onSnapshot(
       snap => {
         const data = snap.exists ? snap.data() : null;
         filas[dia] = (data && Array.isArray(data.entries)) ? data.entries : [];
         if (dia === diaAtual) { renderAlunos(); renderFila(); }
       },
       err => { console.error("Erro na fila de " + dia + ":", err); }
+    );
+
+    const refExtras = db.doc("extras/" + dia);
+    refExtras.onSnapshot(
+      snap => {
+        const data = snap.exists ? snap.data() : null;
+        extras[dia] = (data && Array.isArray(data.alunos)) ? data.alunos : [];
+        if (dia === diaAtual) renderAlunos();
+      },
+      err => { console.error("Erro nos alunos extras de " + dia + ":", err); }
     );
   });
 }
@@ -440,3 +556,6 @@ if (window.claude && typeof window.claude.use === "function") {
 </script>
 </body>
 </html>
+```
+
+Lembrando: as partes que usam `claude.use("db")` só funcionam dentro do Claude — fora daqui, o app já cai automaticamente no `localStorage` (funciona, mas fica salvo só naquele navegador).
