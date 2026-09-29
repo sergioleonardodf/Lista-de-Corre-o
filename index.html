@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fila de Correção</title>
+<style>
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --text: #1f2430;
+  --muted: #6b7280;
+  --border: #e2e5ec;
+  --accent: #2f5496;
+  --accent-text: #ffffff;
+  --chip: #eef1f8;
+  --green: #d9ead3;
+  --green-text: #2e5c1a;
+  --danger: #c0392b;
+  --shadow: 0 1px 3px rgba(20,24,40,.08), 0 1px 2px rgba(20,24,40,.06);
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14161c;
+    --card: #1d2028;
+    --text: #eef0f5;
+    --muted: #9aa0ad;
+    --border: #30333d;
+    --accent: #5b82c4;
+    --accent-text: #0d1117;
+    --chip: #262a33;
+    --green: #23361f;
+    --green-text: #b7e2a4;
+    --danger: #e57368;
+    --shadow: 0 1px 3px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14161c;
+  --card: #1d2028;
+  --text: #eef0f5;
+  --muted: #9aa0ad;
+  --border: #30333d;
+  --accent: #5b82c4;
+  --accent-text: #0d1117;
+  --chip: #262a33;
+  --green: #23361f;
+  --green-text: #b7e2a4;
+  --danger: #e57368;
+  --shadow: 0 1px 3px rgba(0,0,0,.4);
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+header {
+  padding: 16px 16px 0;
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  z-index: 5;
+}
+h1 {
+  font-size: 1.15rem;
+  margin: 4px 0 12px;
+  font-weight: 700;
+}
+.tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.tab {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tab.active {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 720px) {
+  main { grid-template-columns: 1fr 1fr; }
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+.card h2 {
+  font-size: 0.95rem;
+  margin: 0 0 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 6px;
+  border-radius: 10px;
+}
+.row + .row { border-top: 1px solid var(--border); }
+.row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  accent-color: var(--accent);
+}
+.row .nome { font-weight: 600; flex: 1; }
+.row .turma {
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: var(--chip);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.fila-row { position: relative; }
+.fila-row.corrigido { background: var(--green); border-radius: 10px; }
+.fila-row.corrigido .nome,
+.fila-row.corrigido .pos,
+.fila-row.corrigido .carinha {
+  text-decoration: line-through;
+  color: var(--green-text);
+}
+.pos {
+  font-weight: 700;
+  min-width: 28px;
+  color: var(--muted);
+}
+.carinha { font-size: 1.2rem; }
+.vazio { color: var(--muted); font-size: 0.9rem; padding: 8px 6px; }
+.limpar-wrap { margin-top: 14px; text-align: right; }
+button.limpar {
+  background: none;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+button.limpar:active { opacity: .7; }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,12,18,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+}
+.modal-overlay.hidden { display: none; }
+.modal {
+  background: var(--card);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 20px;
+  max-width: 340px;
+  width: 100%;
+  box-shadow: var(--shadow);
+}
+.modal p { margin: 0 0 18px; font-size: 0.95rem; }
+.modal .actions { display: flex; gap: 10px; justify-content: flex-end; }
+.modal button {
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--chip);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+.modal button.confirmar {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.75rem;
+  padding: 10px 16px 24px;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>📋 Fila de Correção de Deveres</h1>
+  <div class="tabs" id="tabs"></div>
+</header>
+<main>
+  <section class="card">
+    <h2>Alunos</h2>
+    <div id="lista-alunos"></div>
+  </section>
+  <section class="card">
+    <h2>Fila de Espera</h2>
+    <div id="lista-fila"></div>
+    <div class="limpar-wrap">
+      <button class="limpar" id="btn-limpar">Limpar Fila</button>
+    </div>
+  </section>
+</main>
+<footer id="rodape"></footer>
+
+<div class="modal-overlay hidden" id="modal">
+  <div class="modal">
+    <p id="modal-texto">Tem certeza que deseja limpar toda a fila? Essa ação não pode ser desfeita.</p>
+    <div class="actions">
+      <button id="modal-cancelar">Cancelar</button>
+      <button class="confirmar" id="modal-confirmar">Limpar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DIAS = {"SEGUNDA": {"label": "Segunda-feira", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL BAUTE", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "TERÇA": {"label": "Terça-feira", "alunos": [{"nome": "AMANDA", "turma": "4º"}, {"nome": "BÁRBARA", "turma": "4º"}, {"nome": "BENÍCIO", "turma": "4º"}, {"nome": "EVA", "turma": "4º"}, {"nome": "JÚLIA", "turma": "4º"}, {"nome": "LAURA", "turma": "4º"}, {"nome": "LUCAS KALUME", "turma": "4º"}, {"nome": "MARIANA", "turma": "4º"}, {"nome": "MELISSA", "turma": "4º"}, {"nome": "MUGUEL CADIMA", "turma": "4º"}, {"nome": "NICOLAS", "turma": "4º"}, {"nome": "OLÍVIA", "turma": "4º"}, {"nome": "OTHO", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUARTA": {"label": "Quarta-feira", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "FELIPE", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUINTA": {"label": "Quinta-feira", "alunos": [{"nome": "DANIELA", "turma": "4º"}, {"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}};
+const ORDEM_DIAS = Object.keys(DIAS);
+
+let diaAtual = ORDEM_DIAS[0];
+let filas = {};
+ORDEM_DIAS.forEach(d => filas[d] = []);
+let db = null;
+const writeChain = {};
+
+function chaveLocal(dia) { return "fila_" + dia; }
+
+function carregarLocal() {
+  ORDEM_DIAS.forEach(dia => {
+    try {
+      const raw = localStorage.getItem(chaveLocal(dia));
+      if (raw) filas[dia] = JSON.parse(raw);
+    } catch (e) {}
+  });
+}
+
+function salvarLocal(dia) {
+  try { localStorage.setItem(chaveLocal(dia), JSON.stringify(filas[dia])); } catch (e) {}
+}
+
+function salvarFila(dia) {
+  salvarLocal(dia);
+  if (!db) return;
+  const prev = writeChain[dia] || Promise.resolve();
+  writeChain[dia] = prev
+    .then(() => db.doc("filas/" + dia).set({ entries: filas[dia] }))
+    .catch(err => console.error("Erro ao salvar fila:", err));
+}
+
+function carinhaAleatoria(dia) {
+  const pool = DIAS[dia].carinhas || [];
+  if (pool.length === 0) return "";
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function estaNaFila(dia, nome) {
+  return filas[dia].some(e => e.nome === nome);
+}
+
+function renderTabs() {
+  const tabs = document.getElementById("tabs");
+  tabs.innerHTML = "";
+  ORDEM_DIAS.forEach(dia => {
+    const btn = document.createElement("button");
+    btn.className = "tab" + (dia === diaAtual ? " active" : "");
+    btn.textContent = DIAS[dia].label;
+    btn.onclick = () => { diaAtual = dia; renderTabs(); renderAlunos(); renderFila(); };
+    tabs.appendChild(btn);
+  });
+}
+
+function renderAlunos() {
+  const wrap = document.getElementById("lista-alunos");
+  wrap.innerHTML = "";
+  DIAS[diaAtual].alunos.forEach(aluno => {
+    const row = document.createElement("div");
+    row.className = "row";
+    const chk = document.createElement("input");
+    chk.type = "checkbox";
+    chk.checked = estaNaFila(diaAtual, aluno.nome);
+    chk.onchange = () => onToggleAluno(aluno.nome, chk.checked);
+    const nome = document.createElement("div");
+    nome.className = "nome";
+    nome.textContent = aluno.nome;
+    const turma = document.createElement("div");
+    turma.className = "turma";
+    turma.textContent = aluno.turma;
+    row.appendChild(chk);
+    row.appendChild(nome);
+    row.appendChild(turma);
+    wrap.appendChild(row);
+  });
+}
+
+function renderFila() {
+  const wrap = document.getElementById("lista-fila");
+  wrap.innerHTML = "";
+  const fila = filas[diaAtual];
+  if (fila.length === 0) {
+    const vazio = document.createElement("div");
+    vazio.className = "vazio";
+    vazio.textContent = "";
+    wrap.appendChild(vazio);
+    return;
+  }
+  fila.forEach((entry, idx) => {
+    const row = document.createElement("div");
+    row.className = "row fila-row" + (entry.corrigido ? " corrigido" : "");
+    const pos = document.createElement("div");
+    pos.className = "pos";
+    pos.textContent = (idx + 1) + "º";
+    const carinha = document.createElement("div");
+    carinha.className = "carinha";
+    carinha.textContent = entry.carinha || "";
+    const nome = document.createElement("div");
+    nome.className = "nome";
+    nome.textContent = entry.nome;
+    const chk = document.createElement("input");
+    chk.type = "checkbox";
+    chk.checked = !!entry.corrigido;
+    chk.title = "Dever corrigido?";
+    chk.onchange = () => onToggleCorrigido(idx, chk.checked);
+    row.appendChild(pos);
+    row.appendChild(carinha);
+    row.appendChild(nome);
+    row.appendChild(chk);
+    wrap.appendChild(row);
+  });
+}
+
+function onToggleAluno(nome, marcado) {
+  const fila = filas[diaAtual].slice();
+  const existe = fila.some(e => e.nome === nome);
+  if (marcado && !existe) {
+    fila.push({ nome: nome, carinha: carinhaAleatoria(diaAtual), corrigido: false });
+  } else if (!marcado && existe) {
+    filas[diaAtual] = fila.filter(e => e.nome !== nome);
+    renderAlunos();
+    renderFila();
+    salvarFila(diaAtual);
+    return;
+  } else {
+    return;
+  }
+  filas[diaAtual] = fila;
+  renderAlunos();
+  renderFila();
+  salvarFila(diaAtual);
+}
+
+function onToggleCorrigido(idx, marcado) {
+  const fila = filas[diaAtual].slice();
+  if (!fila[idx]) return;
+  fila[idx] = Object.assign({}, fila[idx], { corrigido: marcado });
+  filas[diaAtual] = fila;
+  renderFila();
+  salvarFila(diaAtual);
+}
+
+const modal = document.getElementById("modal");
+document.getElementById("btn-limpar").onclick = () => modal.classList.remove("hidden");
+document.getElementById("modal-cancelar").onclick = () => modal.classList.add("hidden");
+document.getElementById("modal-confirmar").onclick = () => {
+  filas[diaAtual] = [];
+  renderAlunos();
+  renderFila();
+  salvarFila(diaAtual);
+  modal.classList.add("hidden");
+};
+
+async function initDb() {
+  try {
+    db = await claude.use("db");
+  } catch (e) {
+    db = null;
+  }
+  if (!db) {
+    carregarLocal();
+    renderAlunos();
+    renderFila();
+    return;
+  }
+  ORDEM_DIAS.forEach(dia => {
+    const ref = db.doc("filas/" + dia);
+    ref.onSnapshot(
+      snap => {
+        const data = snap.exists ? snap.data() : null;
+        filas[dia] = (data && Array.isArray(data.entries)) ? data.entries : [];
+        if (dia === diaAtual) { renderAlunos(); renderFila(); }
+      },
+      err => { console.error("Erro na fila de " + dia + ":", err); }
+    );
+  });
+}
+
+renderTabs();
+renderAlunos();
+renderFila();
+
+if (window.claude && typeof window.claude.use === "function") {
+  initDb();
+} else {
+  carregarLocal();
+  renderAlunos();
+  renderFila();
+}
+</script>
+</body>
+</html>
