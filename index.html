@@ -168,7 +168,10 @@ function salvarExtras(dia) {
 }
 
 const carinhaAleatoria = () => CARINHAS[Math.floor(Math.random() * CARINHAS.length)];
-const alunosDoDia = dia => DIAS[dia].alunos.concat(extras[dia] || []);
+const alunosDoDia = dia =>
+  DIAS[dia].alunos
+    .concat(extras[dia] || [])
+    .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" }));
 const estaNaFila = (dia, nome) => filas[dia].some(e => e.nome === nome);
 
 function turmasDoDia(dia) {
