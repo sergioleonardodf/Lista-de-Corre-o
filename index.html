@@ -132,10 +132,10 @@ const CARINHAS = ["🤠","🥳","😜","🤗","🤩","🙃","😄","😴","😎"
 const mk = (lista, t) => lista.map(n => ({ nome: n, turma: t }));
 const DIAS = {
   "SEGUNDA": { label: "SEGUNDA", alunos: mk(["BENTO","BERNARDO","BRUNA","DANIELA","ISABELLE","MARINA","MIGUEL BAUTE","VALENTINA FF","VALENTINA SS"], "4º") },
-  "TERÇA": { label: "TERÇA", alunos: mk(["AMANDA","BÁRBARA","BENÍCIO","EVA","JÚLIA","LAURA","LUCAS KALUME","MARIANA","MELISSA","MIGUEL CADIMA","NICOLAS","OLÍVIA","OTHO"], "5º")
-    .concat(mk(["ANDRÉ","BRUNA","DANIELA","ISABELLE","LUCAS DE PINA","LUNA","BENTO","BERNARDO","CECÍLIA","MARIA JÚLIA","MIGUEL LOPES","VALENTINA SS","MANUELA","FELIPE"], "4º")) },
+  "TERÇA": { label: "TERÇA", alunos: mk(["AMANDA","BÁRBARA","BENÍCIO","EVA","JÚLIA","LAURA","LUCAS KALUME","MARIANA","MELISSA","MIGUEL CADIMA","NICOLAS","OLÍVIA","OTHO"], "5º") },
   "QUARTA": { label: "QUARTA", alunos: mk(["BENTO","BERNARDO","BRUNA","DANIELA","FELIPE","ISABELLE","MARINA","MIGUEL LOPES","VALENTINA SS"], "4º") },
-  "QUINTA": { label: "QUINTA", alunos: mk(["DANIELA","BENTO","BERNARDO","VALENTINA SS","VALENTINA FF","MIGUEL LOPES","ISABELLE","BRUNA","MARINA"], "4º") }
+  "QUINTA": { label: "QUINTA", alunos: mk(["ANDRÉ","BENTO","LUCAS DE PINA","BERNARDO","MIGUEL LOPES","FELIPE","BRUNA","DANIELA","ISABELLE","VALENTINA SS","VALENTINA FF","CECÍLIA","MARIA JÚLIA","LUNA"], "4º")
+    .concat(mk(["BENÍCIO","LUCAS KALUME","NICOLAS","EVA","HEITOR","JÚLIA","MIGUEL CADIMA","AMANDA","MARIANA","OTHO","BÁRBARA","LAURA","MELISSA","OLÍVIA"], "5º")) }
 };
 const ORDEM_DIAS = Object.keys(DIAS);
 const ORDEM_TURMAS = ["4º", "5º", ""];
