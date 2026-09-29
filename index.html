@@ -6,269 +6,71 @@
 <title>Fila de Correção - Mr. Léo</title>
 <style>
 :root {
-  --bg: #f4f6fb;
-  --card: #ffffff;
-  --text: #1f2430;
-  --muted: #6b7280;
-  --border: #e2e5ec;
-  --accent: #2f5496;
-  --accent-text: #ffffff;
-  --chip: #eef1f8;
-  --green: #d9ead3;
-  --green-text: #2e5c1a;
-  --danger: #c0392b;
-  --shadow: 0 1px 3px rgba(20,24,40,.08), 0 1px 2px rgba(20,24,40,.06);
-  box-sizing: border-box;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg:#f4f6fb; --card:#fff; --text:#1f2430; --muted:#6b7280; --border:#e2e5ec;
+  --accent:#2f5496; --accent-text:#fff; --chip:#eef1f8; --green:#d9ead3; --green-text:#2e5c1a; --danger:#c0392b;
+  --shadow:0 1px 3px rgba(20,24,40,.08),0 1px 2px rgba(20,24,40,.06);
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #14161c;
-    --card: #1d2028;
-    --text: #eef0f5;
-    --muted: #9aa0ad;
-    --border: #30333d;
-    --accent: #5b82c4;
-    --accent-text: #0d1117;
-    --chip: #262a33;
-    --green: #23361f;
-    --green-text: #b7e2a4;
-    --danger: #e57368;
-    --shadow: 0 1px 3px rgba(0,0,0,.4);
+    --bg:#14161c; --card:#1d2028; --text:#eef0f5; --muted:#9aa0ad; --border:#30333d;
+    --accent:#5b82c4; --accent-text:#0d1117; --chip:#262a33; --green:#23361f; --green-text:#b7e2a4; --danger:#e57368;
+    --shadow:0 1px 3px rgba(0,0,0,.4);
   }
 }
 :root[data-theme="dark"] {
-  --bg: #14161c;
-  --card: #1d2028;
-  --text: #eef0f5;
-  --muted: #9aa0ad;
-  --border: #30333d;
-  --accent: #5b82c4;
-  --accent-text: #0d1117;
-  --chip: #262a33;
-  --green: #23361f;
-  --green-text: #b7e2a4;
-  --danger: #e57368;
-  --shadow: 0 1px 3px rgba(0,0,0,.4);
+  --bg:#14161c; --card:#1d2028; --text:#eef0f5; --muted:#9aa0ad; --border:#30333d;
+  --accent:#5b82c4; --accent-text:#0d1117; --chip:#262a33; --green:#23361f; --green-text:#b7e2a4; --danger:#e57368;
+  --shadow:0 1px 3px rgba(0,0,0,.4);
 }
-html { scroll-padding-top: env(safe-area-inset-top, 0px); }
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-.app-shell {
-  display: flex;
-  align-items: stretch;
-  min-height: 100vh;
-  min-height: 100dvh;
-}
-aside.sidebar {
-  flex: 0 0 auto;
-  width: 108px;
-  padding: 12px 8px;
-  padding-top: calc(12px + env(safe-area-inset-top, 0px));
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  background: var(--card);
-  border-right: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  height: 100dvh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-aside.sidebar .titulo {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--muted);
-  text-align: center;
-  margin-bottom: 4px;
-  line-height: 1.3;
-}
-.tab {
-  width: 100%;
-  padding: 10px 6px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: center;
-  line-height: 1.25;
-}
-.tab.active {
-  background: var(--accent);
-  color: var(--accent-text);
-  border-color: var(--accent);
-}
-main {
-  flex: 1;
-  min-width: 0;
-  padding: 12px;
-  padding-top: calc(12px + env(safe-area-inset-top, 0px));
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  align-content: start;
-}
-@media (min-width: 640px) {
-  main { grid-template-columns: 1fr 1fr; }
-}
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  padding: 10px 12px;
-}
-.card h2 {
-  font-size: 0.82rem;
-  margin: 0 0 6px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .04em;
-}
-.row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 4px;
-  border-radius: 8px;
-  font-size: 0.88rem;
-}
-.row + .row { border-top: 1px solid var(--border); }
-.row input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  flex: 0 0 auto;
-  accent-color: var(--accent);
-}
-.row .nome { font-weight: 600; flex: 1; }
-.row .turma {
-  font-size: 0.7rem;
-  color: var(--muted);
-  background: var(--chip);
-  padding: 1px 7px;
-  border-radius: 999px;
-}
-.add-aluno {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px dashed var(--border);
-}
-.add-aluno input[type="text"] {
-  flex: 1;
-  min-width: 0;
-  padding: 7px 9px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 0.85rem;
-}
-.add-aluno select {
-  padding: 7px 6px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 0.85rem;
-}
-.add-aluno button {
-  padding: 7px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--accent);
-  background: var(--accent);
-  color: var(--accent-text);
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.fila-row { position: relative; }
-.fila-row.corrigido { background: var(--green); border-radius: 10px; }
-.fila-row.corrigido .nome,
-.fila-row.corrigido .pos,
-.fila-row.corrigido .carinha {
-  text-decoration: line-through;
-  color: var(--green-text);
-}
-.pos {
-  font-weight: 700;
-  min-width: 28px;
-  color: var(--muted);
-}
-.carinha { font-size: 1.2rem; }
-.vazio { color: var(--muted); font-size: 0.9rem; padding: 8px 6px; }
-.limpar-wrap { margin-top: 14px; text-align: right; }
-button.limpar {
-  background: none;
-  border: 1px solid var(--danger);
-  color: var(--danger);
-  padding: 8px 14px;
-  border-radius: 10px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-button.limpar:active { opacity: .7; }
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(10,12,18,.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 50;
-}
-.modal-overlay.hidden { display: none; }
-.modal {
-  background: var(--card);
-  color: var(--text);
-  border-radius: 14px;
-  padding: 20px;
-  max-width: 340px;
-  width: 100%;
-  box-shadow: var(--shadow);
-}
-.modal p { margin: 0 0 18px; font-size: 0.95rem; }
-.modal .actions { display: flex; gap: 10px; justify-content: flex-end; }
-.modal button {
-  padding: 8px 16px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--chip);
-  color: var(--text);
-  font-weight: 600;
-  cursor: pointer;
-}
-.modal button.confirmar {
-  background: var(--danger);
-  border-color: var(--danger);
-  color: #fff;
-}
-footer {
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.75rem;
-  padding: 10px 16px 24px;
-}
+html { scroll-padding-top:env(safe-area-inset-top,0px); }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+header.topo { text-align:center; padding:14px 12px; background:var(--card); border-bottom:1px solid var(--border); }
+header.topo h1 { margin:0; font-size:1.35rem; font-weight:800; color:var(--accent); }
+.app-shell { display:flex; align-items:stretch; min-height:calc(100dvh - 60px); }
+aside.sidebar { flex:0 0 auto; width:108px; padding:12px 8px; background:var(--card); border-right:1px solid var(--border);
+  position:sticky; top:0; height:100dvh; overflow-y:auto; display:flex; flex-direction:column; gap:8px; }
+aside.sidebar .titulo { font-size:.7rem; font-weight:700; color:var(--muted); text-align:center; margin-bottom:4px; }
+#tabs { display:flex; flex-direction:column; gap:8px; }
+.tab { width:100%; padding:10px 6px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:.8rem; font-weight:600; cursor:pointer; }
+.tab.active { background:var(--accent); color:var(--accent-text); border-color:var(--accent); }
+main { flex:1; min-width:0; padding:12px; display:grid; grid-template-columns:1fr; gap:12px; align-content:start; }
+@media (min-width:640px) { main { grid-template-columns:1fr 1fr; } }
+.card { background:var(--card); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:10px 12px; }
+.card h2 { font-size:.82rem; margin:0 0 6px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+.subtabs { display:flex; gap:6px; margin:0 0 6px; }
+.subtabs.hidden { display:none; }
+.subtab { flex:1; padding:7px 6px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:.82rem; font-weight:700; cursor:pointer; }
+.subtab.active { background:var(--accent); color:var(--accent-text); border-color:var(--accent); }
+.row { display:flex; align-items:center; gap:8px; padding:5px 4px; border-radius:8px; font-size:.88rem; }
+.row + .row { border-top:1px solid var(--border); }
+.row input[type="checkbox"] { width:18px; height:18px; flex:0 0 auto; accent-color:var(--accent); }
+.row .nome { font-weight:600; flex:1; }
+.row .turma { font-size:.7rem; color:var(--muted); background:var(--chip); padding:1px 7px; border-radius:999px; }
+.add-aluno { display:flex; gap:6px; margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); }
+.add-aluno input[type="text"], .add-aluno select { padding:7px 9px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:.85rem; }
+.add-aluno input[type="text"] { flex:1; min-width:0; }
+.add-aluno button { padding:7px 12px; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:var(--accent-text); font-weight:700; font-size:.85rem; cursor:pointer; white-space:nowrap; }
+.msg-erro { margin-top:6px; font-size:.8rem; font-weight:600; color:var(--danger); }
+.msg-erro.hidden { display:none; }
+.fila-row.corrigido { background:var(--green); border-radius:10px; }
+.fila-row.corrigido .nome, .fila-row.corrigido .pos, .fila-row.corrigido .carinha { text-decoration:line-through; color:var(--green-text); }
+.pos { font-weight:700; min-width:28px; color:var(--muted); }
+.carinha { font-size:1.2rem; }
+.limpar-wrap { margin-top:14px; text-align:right; }
+button.limpar { background:none; border:1px solid var(--danger); color:var(--danger); padding:8px 14px; border-radius:10px; font-size:.85rem; font-weight:600; cursor:pointer; }
+.modal-overlay { position:fixed; inset:0; background:rgba(10,12,18,.45); display:flex; align-items:center; justify-content:center; padding:20px; z-index:50; }
+.modal-overlay.hidden { display:none; }
+.modal { background:var(--card); color:var(--text); border-radius:14px; padding:20px; max-width:340px; width:100%; box-shadow:var(--shadow); }
+.modal p { margin:0 0 18px; font-size:.95rem; }
+.modal .actions { display:flex; gap:10px; justify-content:flex-end; }
+.modal button { padding:8px 16px; border-radius:10px; border:1px solid var(--border); background:var(--chip); color:var(--text); font-weight:600; cursor:pointer; }
+.modal button.confirmar { background:var(--danger); border-color:var(--danger); color:#fff; }
 </style>
 </head>
 <body>
+<header class="topo"><h1>Fila de Correção - Mr. Léo</h1></header>
 <div class="app-shell">
   <aside class="sidebar">
     <div class="titulo">📋 Dias</div>
@@ -277,6 +79,7 @@ footer {
   <main>
     <section class="card">
       <h2>Alunos</h2>
+      <div id="subtabs" class="subtabs hidden"></div>
       <div id="lista-alunos"></div>
       <div class="add-aluno">
         <input type="text" id="novo-aluno-nome" placeholder="Nome do aluno">
@@ -287,20 +90,19 @@ footer {
         </select>
         <button id="btn-add-aluno">+ Adicionar</button>
       </div>
+      <div id="msg-aluno" class="msg-erro hidden" role="alert"></div>
     </section>
     <section class="card">
       <h2>Fila de Espera</h2>
       <div id="lista-fila"></div>
-      <div class="limpar-wrap">
-        <button class="limpar" id="btn-limpar">Limpar Fila</button>
-      </div>
+      <div class="limpar-wrap"><button class="limpar" id="btn-limpar">Limpar Fila</button></div>
     </section>
   </main>
 </div>
 
 <div class="modal-overlay hidden" id="modal">
   <div class="modal">
-    <p id="modal-texto">Tem certeza que deseja limpar toda a fila? Essa ação não pode ser desfeita.</p>
+    <p>Tem certeza que deseja limpar toda a fila? Essa ação não pode ser desfeita.</p>
     <div class="actions">
       <button id="modal-cancelar">Cancelar</button>
       <button class="confirmar" id="modal-confirmar">Limpar</button>
@@ -309,71 +111,52 @@ footer {
 </div>
 
 <script>
-const DIAS = {"SEGUNDA": {"label": "SEGUNDA", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL BAUTE", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "TERÇA": {"label": "TERÇA", "alunos": [{"nome": "AMANDA", "turma": "5º"}, {"nome": "BÁRBARA", "turma": "5º"}, {"nome": "BENÍCIO", "turma": "5º"}, {"nome": "EVA", "turma": "5º"}, {"nome": "JÚLIA", "turma": "5º"}, {"nome": "LAURA", "turma": "5º"}, {"nome": "LUCAS KALUME", "turma": "5º"}, {"nome": "MARIANA", "turma": "5º"}, {"nome": "MELISSA", "turma": "5º"}, {"nome": "MIGUEL CADIMA", "turma": "5º"}, {"nome": "NICOLAS", "turma": "5º"}, {"nome": "OLÍVIA", "turma": "5º"}, {"nome": "OTHO", "turma": "5º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUARTA": {"label": "QUARTA", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "FELIPE", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUINTA": {"label": "QUINTA", "alunos": [{"nome": "DANIELA", "turma": "4º"}, {"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}};
+const CARINHAS = ["🤠","🥳","😜","🤗","🤩","🙃","😄","😴","😎","😃","😁","😋","🤪","😌","🤩"];
+const mk = (lista, t) => lista.map(n => ({ nome: n, turma: t }));
+const DIAS = {
+  "SEGUNDA": { label: "SEGUNDA", alunos: mk(["BENTO","BERNARDO","BRUNA","DANIELA","ISABELLE","MARINA","MIGUEL BAUTE","VALENTINA FF","VALENTINA SS"], "4º") },
+  "TERÇA": { label: "TERÇA", alunos: mk(["AMANDA","BÁRBARA","BENÍCIO","EVA","JÚLIA","LAURA","LUCAS KALUME","MARIANA","MELISSA","MIGUEL CADIMA","NICOLAS","OLÍVIA","OTHO"], "5º")
+    .concat(mk(["ANDRÉ","BRUNA","DANIELA","ISABELLE","LUCAS DE PINA","LUNA","BENTO","BERNARDO","CECÍLIA","MARIA JÚLIA","MIGUEL LOPES","VALENTINA SS","MANUELA","FELIPE"], "4º")) },
+  "QUARTA": { label: "QUARTA", alunos: mk(["BENTO","BERNARDO","BRUNA","DANIELA","FELIPE","ISABELLE","MARINA","MIGUEL LOPES","VALENTINA SS"], "4º") },
+  "QUINTA": { label: "QUINTA", alunos: mk(["DANIELA","BENTO","BERNARDO","VALENTINA SS","VALENTINA FF","MIGUEL LOPES","ISABELLE","BRUNA","MARINA"], "4º") }
+};
 const ORDEM_DIAS = Object.keys(DIAS);
+const ORDEM_TURMAS = ["4º", "5º", ""];
 
 let diaAtual = ORDEM_DIAS[0];
-let filas = {};
-let extras = {};
-ORDEM_DIAS.forEach(d => { filas[d] = []; extras[d] = []; });
+let filas = {}, extras = {}, turmaAtual = {};
+ORDEM_DIAS.forEach(d => { filas[d] = []; extras[d] = []; turmaAtual[d] = null; });
 let db = null;
-const writeChainFila = {};
-const writeChainExtras = {};
-
-function chaveLocalFila(dia) { return "fila_" + dia; }
-function chaveLocalExtras(dia) { return "extras_" + dia; }
+const writeChainFila = {}, writeChainExtras = {};
 
 function carregarLocal() {
   ORDEM_DIAS.forEach(dia => {
-    try {
-      const raw = localStorage.getItem(chaveLocalFila(dia));
-      if (raw) filas[dia] = JSON.parse(raw);
-    } catch (e) {}
-    try {
-      const rawExtras = localStorage.getItem(chaveLocalExtras(dia));
-      if (rawExtras) extras[dia] = JSON.parse(rawExtras);
-    } catch (e) {}
+    try { const r = localStorage.getItem("fila_" + dia); if (r) filas[dia] = JSON.parse(r); } catch (e) {}
+    try { const r = localStorage.getItem("extras_" + dia); if (r) extras[dia] = JSON.parse(r); } catch (e) {}
   });
 }
-
-function salvarLocalFila(dia) {
-  try { localStorage.setItem(chaveLocalFila(dia), JSON.stringify(filas[dia])); } catch (e) {}
-}
-
-function salvarLocalExtras(dia) {
-  try { localStorage.setItem(chaveLocalExtras(dia), JSON.stringify(extras[dia])); } catch (e) {}
-}
-
 function salvarFila(dia) {
-  salvarLocalFila(dia);
+  try { localStorage.setItem("fila_" + dia, JSON.stringify(filas[dia])); } catch (e) {}
   if (!db) return;
   const prev = writeChainFila[dia] || Promise.resolve();
-  writeChainFila[dia] = prev
-    .then(() => db.doc("filas/" + dia).set({ entries: filas[dia] }))
+  writeChainFila[dia] = prev.then(() => db.doc("filas/" + dia).set({ entries: filas[dia] }))
     .catch(err => console.error("Erro ao salvar fila:", err));
 }
-
 function salvarExtras(dia) {
-  salvarLocalExtras(dia);
+  try { localStorage.setItem("extras_" + dia, JSON.stringify(extras[dia])); } catch (e) {}
   if (!db) return;
   const prev = writeChainExtras[dia] || Promise.resolve();
-  writeChainExtras[dia] = prev
-    .then(() => db.doc("extras/" + dia).set({ alunos: extras[dia] }))
+  writeChainExtras[dia] = prev.then(() => db.doc("extras/" + dia).set({ alunos: extras[dia] }))
     .catch(err => console.error("Erro ao salvar alunos adicionados:", err));
 }
 
-function carinhaAleatoria(dia) {
-  const pool = DIAS[dia].carinhas || [];
-  if (pool.length === 0) return "";
-  return pool[Math.floor(Math.random() * pool.length)];
-}
+const carinhaAleatoria = () => CARINHAS[Math.floor(Math.random() * CARINHAS.length)];
+const alunosDoDia = dia => DIAS[dia].alunos.concat(extras[dia] || []);
+const estaNaFila = (dia, nome) => filas[dia].some(e => e.nome === nome);
 
-function alunosDoDia(dia) {
-  return DIAS[dia].alunos.concat(extras[dia] || []);
-}
-
-function estaNaFila(dia, nome) {
-  return filas[dia].some(e => e.nome === nome);
+function turmasDoDia(dia) {
+  const set = new Set(alunosDoDia(dia).map(a => a.turma || ""));
+  return ORDEM_TURMAS.filter(t => set.has(t)).concat([...set].filter(t => !ORDEM_TURMAS.includes(t)));
 }
 
 function renderTabs() {
@@ -388,10 +171,27 @@ function renderTabs() {
   });
 }
 
+function renderSubtabs(turmas) {
+  const el = document.getElementById("subtabs");
+  el.innerHTML = "";
+  el.classList.toggle("hidden", turmas.length < 2);
+  if (turmas.length < 2) return;
+  turmas.forEach(t => {
+    const b = document.createElement("button");
+    b.className = "subtab" + (t === turmaAtual[diaAtual] ? " active" : "");
+    b.textContent = t || "Outros";
+    b.onclick = () => { turmaAtual[diaAtual] = t; renderAlunos(); };
+    el.appendChild(b);
+  });
+}
+
 function renderAlunos() {
+  const turmas = turmasDoDia(diaAtual);
+  if (!turmas.includes(turmaAtual[diaAtual])) turmaAtual[diaAtual] = turmas[0];
+  renderSubtabs(turmas);
   const wrap = document.getElementById("lista-alunos");
   wrap.innerHTML = "";
-  alunosDoDia(diaAtual).forEach(aluno => {
+  alunosDoDia(diaAtual).filter(a => (a.turma || "") === turmaAtual[diaAtual]).forEach(aluno => {
     const row = document.createElement("div");
     row.className = "row";
     const chk = document.createElement("input");
@@ -404,9 +204,7 @@ function renderAlunos() {
     const turma = document.createElement("div");
     turma.className = "turma";
     turma.textContent = aluno.turma;
-    row.appendChild(chk);
-    row.appendChild(nome);
-    row.appendChild(turma);
+    row.append(chk, nome, turma);
     wrap.appendChild(row);
   });
 }
@@ -414,15 +212,7 @@ function renderAlunos() {
 function renderFila() {
   const wrap = document.getElementById("lista-fila");
   wrap.innerHTML = "";
-  const fila = filas[diaAtual];
-  if (fila.length === 0) {
-    const vazio = document.createElement("div");
-    vazio.className = "vazio";
-    vazio.textContent = "";
-    wrap.appendChild(vazio);
-    return;
-  }
-  fila.forEach((entry, idx) => {
+  filas[diaAtual].forEach((entry, idx) => {
     const row = document.createElement("div");
     row.className = "row fila-row" + (entry.corrigido ? " corrigido" : "");
     const pos = document.createElement("div");
@@ -439,29 +229,18 @@ function renderFila() {
     chk.checked = !!entry.corrigido;
     chk.title = "Dever corrigido?";
     chk.onchange = () => onToggleCorrigido(idx, chk.checked);
-    row.appendChild(pos);
-    row.appendChild(carinha);
-    row.appendChild(nome);
-    row.appendChild(chk);
+    row.append(pos, carinha, nome, chk);
     wrap.appendChild(row);
   });
 }
 
 function onToggleAluno(nome, marcado) {
-  const fila = filas[diaAtual].slice();
-  const existe = fila.some(e => e.nome === nome);
+  const existe = estaNaFila(diaAtual, nome);
   if (marcado && !existe) {
-    fila.push({ nome: nome, carinha: carinhaAleatoria(diaAtual), corrigido: false });
+    filas[diaAtual] = filas[diaAtual].concat([{ nome, carinha: carinhaAleatoria(), corrigido: false }]);
   } else if (!marcado && existe) {
-    filas[diaAtual] = fila.filter(e => e.nome !== nome);
-    renderAlunos();
-    renderFila();
-    salvarFila(diaAtual);
-    return;
-  } else {
-    return;
-  }
-  filas[diaAtual] = fila;
+    filas[diaAtual] = filas[diaAtual].filter(e => e.nome !== nome);
+  } else return;
   renderAlunos();
   renderFila();
   salvarFila(diaAtual);
@@ -480,11 +259,20 @@ document.getElementById("btn-add-aluno").onclick = () => {
   const inputNome = document.getElementById("novo-aluno-nome");
   const inputTurma = document.getElementById("novo-aluno-turma");
   const nome = inputNome.value.trim().toUpperCase();
-  if (!nome) { inputNome.focus(); return; }
-  const jaExiste = alunosDoDia(diaAtual).some(a => a.nome === nome);
-  if (jaExiste) { inputNome.value = ""; return; }
-  extras[diaAtual] = (extras[diaAtual] || []).concat([{ nome: nome, turma: inputTurma.value || "" }]);
+  const msg = document.getElementById("msg-aluno");
+  const erro = t => { msg.textContent = t; msg.classList.remove("hidden"); };
+  msg.classList.add("hidden");
+  if (!nome) { erro("Digite o nome do aluno."); inputNome.focus(); return; }
+  const turma = inputTurma.value;
+  if (!turma) { erro("Selecione a turma do aluno."); inputTurma.focus(); return; }
+  if (alunosDoDia(diaAtual).some(a => a.nome === nome && a.turma === turma)) {
+    erro(nome + " já está na lista do " + turma + " ano.");
+    inputNome.focus();
+    return;
+  }
+  extras[diaAtual] = (extras[diaAtual] || []).concat([{ nome, turma }]);
   salvarExtras(diaAtual);
+  turmaAtual[diaAtual] = turma;
   inputNome.value = "";
   inputTurma.value = "";
   renderAlunos();
@@ -505,36 +293,24 @@ document.getElementById("modal-confirmar").onclick = () => {
 };
 
 async function initDb() {
-  try {
-    db = await claude.use("db");
-  } catch (e) {
-    db = null;
-  }
-  if (!db) {
-    carregarLocal();
-    renderAlunos();
-    renderFila();
-    return;
-  }
+  try { db = await claude.use("db"); } catch (e) { db = null; }
+  if (!db) { carregarLocal(); renderAlunos(); renderFila(); return; }
   ORDEM_DIAS.forEach(dia => {
-    const refFila = db.doc("filas/" + dia);
-    refFila.onSnapshot(
+    db.doc("filas/" + dia).onSnapshot(
       snap => {
         const data = snap.exists ? snap.data() : null;
         filas[dia] = (data && Array.isArray(data.entries)) ? data.entries : [];
         if (dia === diaAtual) { renderAlunos(); renderFila(); }
       },
-      err => { console.error("Erro na fila de " + dia + ":", err); }
+      err => console.error("Erro na fila de " + dia + ":", err)
     );
-
-    const refExtras = db.doc("extras/" + dia);
-    refExtras.onSnapshot(
+    db.doc("extras/" + dia).onSnapshot(
       snap => {
         const data = snap.exists ? snap.data() : null;
         extras[dia] = (data && Array.isArray(data.alunos)) ? data.alunos : [];
         if (dia === diaAtual) renderAlunos();
       },
-      err => { console.error("Erro nos alunos extras de " + dia + ":", err); }
+      err => console.error("Erro nos alunos extras de " + dia + ":", err)
     );
   });
 }
@@ -542,14 +318,8 @@ async function initDb() {
 renderTabs();
 renderAlunos();
 renderFila();
-
-if (window.claude && typeof window.claude.use === "function") {
-  initDb();
-} else {
-  carregarLocal();
-  renderAlunos();
-  renderFila();
-}
+if (window.claude && typeof window.claude.use === "function") initDb();
+else { carregarLocal(); renderAlunos(); renderFila(); }
 </script>
 </body>
 </html>
