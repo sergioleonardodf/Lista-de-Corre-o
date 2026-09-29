@@ -84,7 +84,7 @@ header.topo h1 { font-size:clamp(1.05rem, 5vw, 1.35rem); overflow-wrap:anywhere;
   .modal { max-width:100%; }
 }
 
-</style>
+.sep-corrigidos { margin-top:10px; padding:6px 4px 4px; border-top:2px solid var(--border); font-size:.75rem; font-weight:800; letter-spacing:.06em; color:var(--green-text); text-align:center; }
 </style>
 </head>
 <body>
@@ -232,12 +232,16 @@ function renderAlunos() {
 function renderFila() {
   const wrap = document.getElementById("lista-fila");
   wrap.innerHTML = "";
-  filas[diaAtual].forEach((entry, idx) => {
+  const itens = filas[diaAtual].map((entry, idx) => ({ entry, idx }));
+  const pendentes = itens.filter(i => !i.entry.corrigido);
+  const corrigidos = itens.filter(i => i.entry.corrigido);
+
+  const criarLinha = (entry, idx, posTexto) => {
     const row = document.createElement("div");
     row.className = "row fila-row" + (entry.corrigido ? " corrigido" : "");
     const pos = document.createElement("div");
     pos.className = "pos";
-    pos.textContent = (idx + 1) + "º";
+    pos.textContent = posTexto;
     const carinha = document.createElement("div");
     carinha.className = "carinha";
     carinha.textContent = entry.carinha || "";
@@ -250,14 +254,29 @@ function renderFila() {
     chk.title = "Dever corrigido?";
     chk.onchange = () => onToggleCorrigido(idx, chk.checked);
     row.append(pos, carinha, nome, chk);
-    wrap.appendChild(row);
-  });
+    return row;
+  };
+
+  pendentes.forEach((i, n) => wrap.appendChild(criarLinha(i.entry, i.idx, (n + 1) + "º")));
+
+  if (corrigidos.length) {
+    const sep = document.createElement("div");
+    sep.className = "sep-corrigidos";
+    sep.textContent = "CORRIGIDOS";
+    wrap.appendChild(sep);
+    corrigidos.forEach(i => wrap.appendChild(criarLinha(i.entry, i.idx, "✓")));
+  }
 }
 
 function onToggleAluno(nome, marcado) {
   const existe = estaNaFila(diaAtual, nome);
   if (marcado && !existe) {
-    filas[diaAtual] = filas[diaAtual].concat([{ nome, carinha: carinhaAleatoria(), corrigido: false }]);
+    const fila = filas[diaAtual].slice();
+    const novo = { nome, carinha: carinhaAleatoria(), corrigido: false };
+    const primeiroCorrigido = fila.findIndex(e => e.corrigido);
+    if (primeiroCorrigido === -1) fila.push(novo);
+    else fila.splice(primeiroCorrigido, 0, novo);
+    filas[diaAtual] = fila;
   } else if (!marcado && existe) {
     filas[diaAtual] = filas[diaAtual].filter(e => e.nome !== nome);
   } else return;
@@ -269,7 +288,14 @@ function onToggleAluno(nome, marcado) {
 function onToggleCorrigido(idx, marcado) {
   const fila = filas[diaAtual].slice();
   if (!fila[idx]) return;
-  fila[idx] = Object.assign({}, fila[idx], { corrigido: marcado });
+  const entry = Object.assign({}, fila.splice(idx, 1)[0], { corrigido: marcado });
+  if (marcado) {
+    fila.push(entry);
+  } else {
+    const primeiroCorrigido = fila.findIndex(e => e.corrigido);
+    if (primeiroCorrigido === -1) fila.push(entry);
+    else fila.splice(primeiroCorrigido, 0, entry);
+  }
   filas[diaAtual] = fila;
   renderFila();
   salvarFila(diaAtual);
