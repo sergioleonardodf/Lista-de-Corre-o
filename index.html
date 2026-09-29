@@ -1,12 +1,9 @@
-Aqui está o código completo — já está tudo num arquivo só, sem dependências externas:
-
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Fila de Correção</title>
+<title>Fila de Correção - Mr. Léo</title>
 <style>
 :root {
   --bg: #f4f6fb;
@@ -312,7 +309,7 @@ footer {
 </div>
 
 <script>
-const DIAS = {"SEGUNDA": {"label": "Segunda-feira", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL BAUTE", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "TERÇA": {"label": "Terça-feira", "alunos": [{"nome": "AMANDA", "turma": "5º"}, {"nome": "BÁRBARA", "turma": "5º"}, {"nome": "BENÍCIO", "turma": "5º"}, {"nome": "EVA", "turma": "5º"}, {"nome": "JÚLIA", "turma": "5º"}, {"nome": "LAURA", "turma": "5º"}, {"nome": "LUCAS KALUME", "turma": "5º"}, {"nome": "MARIANA", "turma": "5º"}, {"nome": "MELISSA", "turma": "5º"}, {"nome": "MIGUEL CADIMA", "turma": "5º"}, {"nome": "NICOLAS", "turma": "5º"}, {"nome": "OLÍVIA", "turma": "5º"}, {"nome": "OTHO", "turma": "5º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUARTA": {"label": "Quarta-feira", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "FELIPE", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUINTA": {"label": "Quinta-feira", "alunos": [{"nome": "DANIELA", "turma": "4º"}, {"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}};
+const DIAS = {"SEGUNDA": {"label": "SEGUNDA", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL BAUTE", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "TERÇA": {"label": "TERÇA", "alunos": [{"nome": "AMANDA", "turma": "5º"}, {"nome": "BÁRBARA", "turma": "5º"}, {"nome": "BENÍCIO", "turma": "5º"}, {"nome": "EVA", "turma": "5º"}, {"nome": "JÚLIA", "turma": "5º"}, {"nome": "LAURA", "turma": "5º"}, {"nome": "LUCAS KALUME", "turma": "5º"}, {"nome": "MARIANA", "turma": "5º"}, {"nome": "MELISSA", "turma": "5º"}, {"nome": "MIGUEL CADIMA", "turma": "5º"}, {"nome": "NICOLAS", "turma": "5º"}, {"nome": "OLÍVIA", "turma": "5º"}, {"nome": "OTHO", "turma": "5º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUARTA": {"label": "QUARTA", "alunos": [{"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "DANIELA", "turma": "4º"}, {"nome": "FELIPE", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}, "QUINTA": {"label": "QUINTA", "alunos": [{"nome": "DANIELA", "turma": "4º"}, {"nome": "BENTO", "turma": "4º"}, {"nome": "BERNARDO", "turma": "4º"}, {"nome": "VALENTINA SS", "turma": "4º"}, {"nome": "VALENTINA FF", "turma": "4º"}, {"nome": "MIGUEL LOPES", "turma": "4º"}, {"nome": "ISABELLE", "turma": "4º"}, {"nome": "BRUNA", "turma": "4º"}, {"nome": "MARINA", "turma": "4º"}], "carinhas": ["🤠", "🥳", "😜", "🤗", "🤩", "🙃", "😄", "😴", "😎", "😃", "😁", "😋", "🤪", "😌", "🤩"]}};
 const ORDEM_DIAS = Object.keys(DIAS);
 
 let diaAtual = ORDEM_DIAS[0];
