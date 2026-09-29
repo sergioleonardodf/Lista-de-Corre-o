@@ -281,6 +281,18 @@ document.getElementById("novo-aluno-nome").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("btn-add-aluno").click();
 });
 
+  function esconderMsgAluno() {
+  document.getElementById("msg-aluno").classList.add("hidden");
+}
+
+document.addEventListener("click", e => {
+  if (e.target.id !== "btn-add-aluno") esconderMsgAluno();
+});
+
+document.getElementById("novo-aluno-nome").addEventListener("input", e => {
+  if (!e.target.value.trim()) esconderMsgAluno();
+});
+  
 const modal = document.getElementById("modal");
 document.getElementById("btn-limpar").onclick = () => modal.classList.remove("hidden");
 document.getElementById("modal-cancelar").onclick = () => modal.classList.add("hidden");
