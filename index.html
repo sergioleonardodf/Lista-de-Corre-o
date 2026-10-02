@@ -85,6 +85,14 @@ header.topo h1 { font-size:clamp(1.05rem, 5vw, 1.35rem); overflow-wrap:anywhere;
 }
 
 .sep-corrigidos { margin-top:10px; padding:6px 4px 4px; border-top:2px solid var(--border); font-size:.75rem; font-weight:800; letter-spacing:.06em; color:var(--green-text); text-align:center; }
+.fila-dividida { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.fila-col { min-width:0; }
+.fila-col + .fila-col { border-left:1px solid var(--border); padding-left:10px; }
+.fila-col h3 { margin:0 0 4px; padding-bottom:4px; font-size:.75rem; text-align:center; color:var(--accent); border-bottom:2px solid var(--border); text-transform:uppercase; letter-spacing:.04em; }
+.fila-dividida .row { gap:5px; padding:5px 2px; font-size:.8rem; }
+.fila-dividida .pos { min-width:22px; }
+.fila-dividida .carinha { font-size:1rem; }
+.fila-vazia { font-size:.75rem; color:var(--muted); text-align:center; padding:8px 0; }
 </style>
 </head>
 <body>
@@ -139,6 +147,11 @@ const DIAS = {
 };
 const ORDEM_DIAS = Object.keys(DIAS);
 const ORDEM_TURMAS = ["4º", "5º", ""];
+  // Alunas que fazem a correção com a Tia Vivi (fila separada), por dia
+const VIVI = {
+  "QUINTA": new Set(["BRUNA","CECÍLIA","DANIELA","ISABELLE","LUNA","MARIA JÚLIA","VALENTINA FF","VALENTINA SS"])
+};
+const ehVivi = (dia, nome) => !!(VIVI[dia] && VIVI[dia].has(nome));
 
 let diaAtual = ORDEM_DIAS[0];
 let filas = {}, extras = {}, turmaAtual = {};
@@ -233,8 +246,6 @@ function renderFila() {
   const wrap = document.getElementById("lista-fila");
   wrap.innerHTML = "";
   const itens = filas[diaAtual].map((entry, idx) => ({ entry, idx }));
-  const pendentes = itens.filter(i => !i.entry.corrigido);
-  const corrigidos = itens.filter(i => i.entry.corrigido);
 
   const criarLinha = (entry, idx, posTexto) => {
     const row = document.createElement("div");
@@ -257,15 +268,44 @@ function renderFila() {
     return row;
   };
 
-  pendentes.forEach((i, n) => wrap.appendChild(criarLinha(i.entry, i.idx, (n + 1) + "º")));
+  // monta pendentes + separador + corrigidos de uma lista de itens
+  const montarLista = (lista, container) => {
+    const pendentes = lista.filter(i => !i.entry.corrigido);
+    const corrigidos = lista.filter(i => i.entry.corrigido);
+    pendentes.forEach((i, n) => container.appendChild(criarLinha(i.entry, i.idx, (n + 1) + "º")));
+    if (corrigidos.length) {
+      const sep = document.createElement("div");
+      sep.className = "sep-corrigidos";
+      sep.textContent = "CORRIGIDOS";
+      container.appendChild(sep);
+      corrigidos.forEach(i => container.appendChild(criarLinha(i.entry, i.idx, "✓")));
+    }
+  };
 
-  if (corrigidos.length) {
-    const sep = document.createElement("div");
-    sep.className = "sep-corrigidos";
-    sep.textContent = "CORRIGIDOS";
-    wrap.appendChild(sep);
-    corrigidos.forEach(i => wrap.appendChild(criarLinha(i.entry, i.idx, "✓")));
-  }
+  // dias sem Tia Vivi: fila única, como antes
+  if (!VIVI[diaAtual]) { montarLista(itens, wrap); return; }
+
+  // dia com Tia Vivi: coluna dividida ao meio
+  const grid = document.createElement("div");
+  grid.className = "fila-dividida";
+  [
+    { titulo: "Mr. Léo", lista: itens.filter(i => !ehVivi(diaAtual, i.entry.nome)) },
+    { titulo: "Tia Vivi", lista: itens.filter(i => ehVivi(diaAtual, i.entry.nome)) }
+  ].forEach(c => {
+    const col = document.createElement("div");
+    col.className = "fila-col";
+    const h = document.createElement("h3");
+    h.textContent = c.titulo;
+    col.appendChild(h);
+    if (!c.lista.length) {
+      const v = document.createElement("div");
+      v.className = "fila-vazia";
+      v.textContent = "Fila vazia";
+      col.appendChild(v);
+    } else montarLista(c.lista, col);
+    grid.appendChild(col);
+  });
+  wrap.appendChild(grid);
 }
 
 function onToggleAluno(nome, marcado) {
