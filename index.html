@@ -93,10 +93,26 @@ header.topo h1 { font-size:clamp(1.05rem, 5vw, 1.35rem); overflow-wrap:anywhere;
 .fila-dividida .pos { min-width:22px; }
 .fila-dividida .carinha { font-size:1rem; }
 .fila-vazia { font-size:.75rem; color:var(--muted); text-align:center; padding:8px 0; }
+  body.bloqueado header.topo, body.bloqueado .app-shell { display:none; }
+#gate { display:none; min-height:100dvh; align-items:center; justify-content:center; padding:20px; }
+body.bloqueado #gate { display:flex; }
+#gate form { background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); padding:22px; width:100%; max-width:320px; display:flex; flex-direction:column; gap:10px; text-align:center; }
+#gate h2 { margin:0 0 4px; font-size:1.1rem; color:var(--accent); }
+#gate input { padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:1rem; text-align:center; }
+#gate button { padding:10px; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:var(--accent-text); font-weight:700; font-size:.95rem; cursor:pointer; }
+#gate .erro { color:var(--danger); font-size:.85rem; font-weight:600; }
+#gate .erro.hidden { display:none; }
 </style>
 </head>
-<body>
-<header class="topo"><h1>Lista de Correção - Mr. Léo</h1></header>
+<body class="bloqueado">
+<div id="gate">
+  <form id="gate-form">
+    <h2>🔒 Lista de Correção</h2>
+    <input type="password" id="gate-senha" placeholder="Senha" autocomplete="current-password">
+    <button type="submit">Entrar</button>
+    <div id="gate-erro" class="erro hidden" role="alert">Senha incorreta</div>
+  </form>
+</div><header class="topo"><h1>Lista de Correção - Mr. Léo</h1></header>
 <div class="app-shell">
   <aside class="sidebar">
         <div id="tabs"></div>
@@ -413,11 +429,45 @@ async function initDb() {
   });
 }
 
-renderTabs();
-renderAlunos();
-renderFila();
-if (window.claude && typeof window.claude.use === "function") initDb();
-else { carregarLocal(); renderAlunos(); renderFila(); }
+const SENHA_HASH = "f9cae0b0d0280218556b95d7e57a465563690b3cde648bcbcf6b17eed203baad";
+
+async function sha256(texto) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(texto));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+let appIniciado = false;
+function iniciarApp() {
+  if (appIniciado) return;
+  appIniciado = true;
+  document.body.classList.remove("bloqueado");
+  renderTabs();
+  renderAlunos();
+  renderFila();
+  if (window.claude && typeof window.claude.use === "function") initDb();
+  else { carregarLocal(); renderAlunos(); renderFila(); }
+}
+
+document.getElementById("gate-form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const campo = document.getElementById("gate-senha");
+  const erro = document.getElementById("gate-erro");
+  let ok = false;
+  try { ok = (await sha256(campo.value)) === SENHA_HASH; } catch (err) { ok = false; }
+  if (ok) {
+    try { sessionStorage.setItem("acesso_ok", SENHA_HASH); } catch (err) {}
+    iniciarApp();
+  } else {
+    erro.classList.remove("hidden");
+    campo.value = "";
+    campo.focus();
+  }
+});
+
+try {
+  if (sessionStorage.getItem("acesso_ok") === SENHA_HASH) iniciarApp();
+  else document.getElementById("gate-senha").focus();
+} catch (err) {}}
 </script>
 </body>
 </html>
