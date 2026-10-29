@@ -29,14 +29,14 @@ body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-sys
 header.topo { text-align:center; padding:14px 12px; background:var(--card); border-bottom:1px solid var(--border); }
 header.topo h1 { margin:0; font-size:1.35rem; font-weight:800; color:var(--accent); }
 .app-shell { display:flex; align-items:stretch; min-height:calc(100dvh - 60px); }
-aside.sidebar { flex:0 0 auto; width:108px; padding:12px 8px; background:var(--card); border-right:1px solid var(--border);
+aside.sidebar { flex:0 0 auto; width:96px; padding:12px 6px; background:var(--card); border-right:1px solid var(--border);
   position:sticky; top:0; height:100dvh; overflow-y:auto; display:flex; flex-direction:column; gap:8px; }
 aside.sidebar .titulo { font-size:.7rem; font-weight:700; color:var(--muted); text-align:center; margin-bottom:4px; }
 #tabs { display:flex; flex-direction:column; gap:8px; }
 .tab { width:100%; padding:10px 6px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:.8rem; font-weight:600; cursor:pointer; }
 .tab.active { background:var(--accent); color:var(--accent-text); border-color:var(--accent); }
 main { flex:1; min-width:0; padding:12px; display:grid; grid-template-columns:1fr; gap:12px; align-content:start; }
-@media (min-width:640px) { main { grid-template-columns:1fr 1fr; } }
+@media (min-width:640px) { main { grid-template-columns:minmax(220px,.78fr) minmax(0,1.22fr); } }
 .card { background:var(--card); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:10px 12px; }
 .card h2 { font-size:.82rem; margin:0 0 6px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
 .subtabs { display:flex; gap:6px; margin:0 0 6px; }
@@ -55,9 +55,11 @@ main { flex:1; min-width:0; padding:12px; display:grid; grid-template-columns:1f
 .msg-erro { margin-top:6px; font-size:.8rem; font-weight:600; color:var(--danger); }
 .msg-erro.hidden { display:none; }
 .fila-row.corrigido { background:var(--green); border-radius:10px; }
-.fila-row.corrigido .nome, .fila-row.corrigido .pos, .fila-row.corrigido .carinha { text-decoration:line-through; color:var(--green-text); }
+.fila-row.corrigido .nome, .fila-row.corrigido .pos { text-decoration:line-through; color:var(--green-text); }
+/* O emoji/avatar permanece sem tachado mesmo quando o aluno é marcado como corrigido. */
+.fila-row.corrigido .carinha { text-decoration:none; }
 .pos { font-weight:700; min-width:28px; color:var(--muted); }
-:root { --avatar:5.4rem; }
+:root { --avatar:2.3rem; }
 .carinha { font-size:var(--avatar); line-height:1; flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
 .carinha img { width:var(--avatar); height:var(--avatar); object-fit:cover; border-radius:50%; display:block; }
 .setas { display:flex; flex-direction:column; flex:0 0 auto; margin:0 2px; }
@@ -86,16 +88,38 @@ button.limpar { background:none; border:1px solid var(--danger); color:var(--dan
   
 html { max-width:100%; overflow-x:hidden; }
 main > .card { min-width:0; }
+/* Fila com rolagem própria: o restante da página fica parado enquanto a fila rola. */
+main > .card:has(#lista-fila) {
+  display:flex;
+  flex-direction:column;
+  height:calc(100dvh - 84px);
+  min-height:220px;
+  min-width:0;
+  overflow:hidden;
+}
+#lista-fila {
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+  padding-right:3px;
+}
+#lista-fila .fila-dividida { align-items:start; }
+
 .row .nome { min-width:0; overflow-wrap:anywhere; }
 .add-aluno { flex-wrap:wrap; }
 .add-aluno input[type="text"] { flex:1 1 140px; min-width:0; }
 .add-aluno select { flex:0 0 auto; }
 header.topo h1 { font-size:clamp(1.05rem, 5vw, 1.35rem); overflow-wrap:anywhere; }
 @media (max-width:480px) {
-  aside.sidebar { width:84px; padding:10px 6px; }
+  aside.sidebar { width:76px; padding:10px 5px; }
   .tab { padding:9px 4px; font-size:.72rem; }
   main { padding:8px; gap:8px; }
   .card { padding:8px 10px; }
+  main > .card:has(#lista-fila) { height:calc(100dvh - 100px); min-height:180px; }
+
   .add-aluno input[type="text"] { flex:1 1 100%; }
   .modal { max-width:100%; }
 }
@@ -119,15 +143,19 @@ body.bloqueado #gate { display:flex; }
 #gate .erro { color:var(--danger); font-size:.85rem; font-weight:600; }
 #gate .erro.hidden { display:none; }
 .fila-dividida .row .nome { overflow-wrap:break-word; }
+.fila-row .nome { min-width:0; overflow-wrap:normal; word-break:normal; white-space:normal; text-align:center; line-height:1.12; }
+.fila-row .nome .nome-primeiro, .fila-row .nome .nome-restante { display:block; }
+.fila-row .nome .nome-primeiro { font-weight:700; }
+
 .carinha.clicavel { cursor:pointer; -webkit-tap-highlight-color:transparent; }
 .carinha.girando { border-radius:50%; background:var(--chip); width:var(--avatar); height:var(--avatar); overflow:hidden; color:var(--accent); }
 .carinha.girando svg { width:100%; height:100%; animation:giro-espiral .7s linear infinite; }
 @keyframes giro-espiral { to { transform:rotate(360deg); } }
-.fila-row { font-size:1.32rem; padding-top:10px; padding-bottom:10px; }
-.fila-dividida .fila-row { font-size:1.2rem; padding-top:10px; padding-bottom:10px; }
+.fila-row { font-size:1.28rem; padding-top:7px; padding-bottom:7px; }
+.fila-dividida .fila-row { font-size:1.16rem; padding-top:7px; padding-bottom:7px; }
 /* Coluna estreita (celular): avatar em cima, nome embaixo */
 @container (max-width:250px) {
-  .fila-dividida .fila-row { --avatar:min(5.4rem,80cqw); font-size:min(1.2rem,15cqw); }
+  .fila-dividida .fila-row { --avatar:min(2.3rem,70cqw); font-size:min(1.16rem,15cqw); }
   .fila-dividida .fila-row { display:grid; grid-template-columns:auto minmax(0,1fr) auto; grid-template-areas:"pos setas chk" "carinha carinha carinha" "nome nome nome"; align-items:center; column-gap:4px; row-gap:2px; padding:4px 2px; min-width:0; }
   .fila-dividida .fila-row .pos { grid-area:pos; justify-self:start; min-width:0; }
   .fila-dividida .fila-row .setas { grid-area:setas; justify-self:center; margin:0; }
@@ -413,7 +441,7 @@ function renderAlunos() {
     btnG.className = "btn-genero";
     const manual = generosAlunos[aluno.nome] || "";
     const inf = generoInferido(aluno.nome);
-    btnG.textContent = manual === "f" ? "👧" : manual === "m" ? "👦" : "↔️";
+    btnG.textContent = manual === "f" ? "👱‍♀️" : manual === "m" ? "👦" : "↔️";
     btnG.title = manual ? (manual === "f" ? "Menina (manual) — clique para alternar" : "Menino (manual) — clique para alternar")
       : "Auto (detectado pelo nome: " + (inf === "f" ? "menina" : inf === "m" ? "menino" : "desconhecido") + ") — clique para alternar";
     btnG.onclick = () => {
@@ -455,7 +483,17 @@ function renderFila() {
     }
     const nome = document.createElement("div");
     nome.className = "nome";
-    nome.textContent = entry.nome;
+    const partesNome = String(entry.nome || "").trim().split(/\\s+/);
+    const primeiroNome = document.createElement("span");
+    primeiroNome.className = "nome-primeiro";
+    primeiroNome.textContent = partesNome.shift() || "";
+    nome.appendChild(primeiroNome);
+    if (partesNome.length) {
+      const restanteNome = document.createElement("span");
+      restanteNome.className = "nome-restante";
+      restanteNome.textContent = partesNome.join(" ");
+      nome.appendChild(restanteNome);
+    }
     const chk = document.createElement("input");
     chk.type = "checkbox";
     chk.checked = !!entry.corrigido;
