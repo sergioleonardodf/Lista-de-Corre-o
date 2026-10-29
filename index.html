@@ -65,10 +65,15 @@ main { flex:1; min-width:0; padding:12px; display:grid; grid-template-columns:1f
 .seta:hover, .seta:active { opacity:1; }
 .seta.vazia { visibility:hidden; pointer-events:none; }
 .seta svg { display:block; }
+.row.com-temas { flex-wrap:wrap; row-gap:4px; }
+.row.com-temas .turma { display:none; }
+.row.com-temas .nome { flex:1 1 0; min-width:92px; overflow-wrap:break-word; }
+.btn-genero { background:none; border:1px solid var(--border); border-radius:6px; padding:1px 5px; font-size:1rem; line-height:1.3; cursor:pointer; flex:0 0 auto; }
+.btn-genero:hover { background:var(--chip); }
 .btn-olho { background:none; border:none; color:var(--muted); cursor:pointer; padding:0 4px; margin-left:4px; vertical-align:middle; line-height:1; opacity:.7; }
 .btn-olho:hover { opacity:1; }
 .btn-olho svg { display:block; }
-.row select.tema { max-width:96px; padding:2px 4px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:.7rem; }
+.row select.tema { max-width:84px; padding:2px 4px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:.7rem; }
 .limpar-wrap { margin-top:14px; text-align:right; }
 button.limpar { background:none; border:1px solid var(--danger); color:var(--danger); padding:8px 14px; border-radius:10px; font-size:.85rem; font-weight:600; cursor:pointer; }
 .modal-overlay { position:fixed; inset:0; background:rgba(10,12,18,.45); display:flex; align-items:center; justify-content:center; padding:20px; z-index:50; }
@@ -229,11 +234,43 @@ const THEMES = {
 let temasAlunos = {};
 let mostrarTemas = false; // { NOME_DO_ALUNO: "Futebol", ... }
 const temaDoAluno = nome => (THEMES[temasAlunos[nome]] ? temasAlunos[nome] : "Geral");
-const poolDoTema = tema => {
+// ===== GÊNERO DOS AVATARES =====
+// Avatares marcados "f" só saem para meninas e "m" só para meninos; sem marcação = neutro (qualquer um).
+// Se o gênero do aluno for desconhecido, só saem avatares neutros.
+// Para marcar uma imagem específica use "Tema/indice" (ex.: "Futebol/0": "m"); para o tema inteiro, o nome do tema.
+const AVATAR_GENERO = { "🦄": "f", "🌸": "f", "🎀": "f" };
+const IMG_GENERO = { "Ginástica rítmica": "f" };
+function generoDoAvatar(ref) {
+  if (ref && ref.charAt(0) === "@") {
+    const chave = ref.slice(1);
+    return IMG_GENERO[chave] || IMG_GENERO[chave.split("/")[0]] || "";
+  }
+  return AVATAR_GENERO[ref] || "";
+}
+const poolBrutoDoTema = tema => {
   const t = THEMES[tema] || THEMES["Geral"];
-  const refs = t.emojis.concat(t.imagens.map((_, i) => "@" + tema + "/" + i));
+  return t.emojis.concat(t.imagens.map((_, i) => "@" + tema + "/" + i));
+};
+const poolDoTema = (tema, genero) => {
+  const ok = ref => { const g = generoDoAvatar(ref); return !g || g === genero; };
+  let refs = poolBrutoDoTema(tema).filter(ok);
+  if (!refs.length) refs = poolBrutoDoTema("Geral").filter(ok); // tema sem opção adequada: usa o Geral
   return refs.length ? refs : CARINHAS;
 };
+
+const semAcento = t => String(t).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim();
+const NOMES_F = new Set(("AGATHA ALICE ALINE AMANDA ANA ANDREA ANGELA ANTONELLA BARBARA BEATRIZ BIANCA BRUNA CAMILA CAMILLE CAROLINA CATARINA CECILIA CLARA CLARICE DANIELA DEBORA DIANA EDUARDA ELISA ELOA EMANUELA EMANUELLE EMILY ESTER EVA FERNANDA FLAVIA GABRIELA GIOVANNA GISELE HELENA HELOISA INGRID ISA ISABEL ISABELA ISABELE ISABELLA ISABELLE ISADORA IRIS JOANA JULIA JULIANA JULIETA KAROLINE LARA LARISSA LAURA LAVINIA LETICIA LIA LILIAN LIVIA LORENA LUANA LUCIANA LUIZA LUISA LUNA LYVIA MAITE MANUELA MARCELA MARGARIDA MARIA MARIANA MARIANE MARINA MARTA MELISSA MIRELLA MIRELA NATALIA NICOLE OLIVIA PAULA PIETRA RAFAELA REBECA RENATA SABRINA SARA SOFIA SOPHIA SOPHIE STELLA TAINA THAIS VALENTINA VANESSA VERA VITORIA YASMIN YARA").split(" "));
+const NOMES_M = new Set(("ADRIANO ALAN ALEXANDRE ANDRE ANTONIO ARTHUR ARTUR BENICIO BENJAMIN BENTO BERNARDO BRENO BRUNO CAIO CALEBE CARLOS DANIEL DAVI DAVID DIEGO DIOGO EDUARDO ENRICO ENZO ERICK FABIO FELIPE FERNANDO FILIPE FRANCISCO GABRIEL GAEL GUILHERME GUSTAVO HEITOR HENRIQUE HUGO IGOR ISAAC JOAO JOSE JOSUE KAIQUE LEANDRO LEONARDO LORENZO LUAN LUCA LUCAS LUIS LUIZ MARCELO MARCOS MATEUS MATHEUS MAURICIO MIGUEL MURILO NATAN NICOLAS NICOLAU NOAH OTHO OTTO OTAVIO PAULO PEDRO RAFAEL RENAN RICARDO ROBERTO RODRIGO SAMUEL SERGIO THEO THIAGO TIAGO VICENTE VICTOR VINICIUS VITOR WILLIAM YURI").split(" "));
+function generoInferido(nome) {
+  const p = semAcento(nome).split(/\s+/)[0] || "";
+  if (NOMES_F.has(p)) return "f";
+  if (NOMES_M.has(p)) return "m";
+  if (/[A-Z]{3,}A$/.test(p)) return "f";   // termina em A (ex.: Valentina) — nomes fora da lista
+  if (/[A-Z]{3,}O$/.test(p)) return "m";   // termina em O (ex.: Bruno)
+  return "";                                // desconhecido: só avatares neutros
+}
+let generosAlunos = {}; // correções manuais: { NOME: "f" | "m" }
+const generoDoNome = nome => generosAlunos[nome] || generoInferido(nome);
 // Avatar guardado na fila: emoji literal, ou "@Tema/indice" para imagem
 function montarAvatar(ref, el) {
   el.textContent = "";
@@ -265,6 +302,14 @@ ORDEM_DIAS.forEach(d => { filas[d] = []; extras[d] = []; turmaAtual[d] = null; }
 let db = null;
 const writeChainFila = {}, writeChainExtras = {};
 
+function salvarGeneros() {
+  try { localStorage.setItem("generos_alunos", JSON.stringify(generosAlunos)); } catch (e) {}
+  if (!db) return;
+  writeChainGeneros = writeChainGeneros.then(() => db.doc("config/generos").set({ map: generosAlunos }))
+    .catch(err => console.error("Erro ao salvar gêneros:", err));
+}
+let writeChainGeneros = Promise.resolve();
+
 function salvarTemas() {
   try { localStorage.setItem("temas_alunos", JSON.stringify(temasAlunos)); } catch (e) {}
   if (!db) return;
@@ -275,6 +320,7 @@ let writeChainTemas = Promise.resolve();
 
 function carregarLocal() {
   try { const r = localStorage.getItem("temas_alunos"); if (r) temasAlunos = JSON.parse(r); } catch (e) {}
+  try { const r = localStorage.getItem("generos_alunos"); if (r) generosAlunos = JSON.parse(r); } catch (e) {}
   ORDEM_DIAS.forEach(dia => {
     try { const r = localStorage.getItem("fila_" + dia); if (r) filas[dia] = JSON.parse(r); } catch (e) {}
     try { const r = localStorage.getItem("extras_" + dia); if (r) extras[dia] = JSON.parse(r); } catch (e) {}
@@ -295,7 +341,7 @@ function salvarExtras(dia) {
     .catch(err => console.error("Erro ao salvar alunos adicionados:", err));
 }
 
-const carinhaAleatoria = nome => { const p = poolDoTema(temaDoAluno(nome)); return p[Math.floor(Math.random() * p.length)]; };
+const carinhaAleatoria = nome => { const p = poolDoTema(temaDoAluno(nome), generoDoNome(nome)); return p[Math.floor(Math.random() * p.length)]; };
 const alunosDoDia = dia =>
   DIAS[dia].alunos
     .concat(extras[dia] || [])
@@ -341,7 +387,7 @@ function renderAlunos() {
   wrap.innerHTML = "";
   alunosDoDia(diaAtual).filter(a => (a.turma || "") === turmaAtual[diaAtual]).forEach(aluno => {
     const row = document.createElement("div");
-    row.className = "row";
+    row.className = "row" + (mostrarTemas ? " com-temas" : "");
     const chk = document.createElement("input");
     chk.type = "checkbox";
     chk.checked = estaNaFila(diaAtual, aluno.nome);
@@ -358,7 +404,24 @@ function renderAlunos() {
     Object.keys(THEMES).forEach(t => { const o = document.createElement("option"); o.value = t; o.textContent = t; sel.appendChild(o); });
     sel.value = temaDoAluno(aluno.nome);
     sel.onchange = () => { temasAlunos[aluno.nome] = sel.value; salvarTemas(); if (estaNaFila(diaAtual, aluno.nome)) trocarAvatar(diaAtual, aluno.nome); };
-    if (mostrarTemas) row.append(chk, nome, sel, turma); else row.append(chk, nome, turma);
+    // Botão de gênero: ↔️ = Auto (pelo nome), 👧 = menina, 👦 = menino. Cada clique avança: Auto → 👧 → 👦 → Auto
+    const btnG = document.createElement("button");
+    btnG.type = "button";
+    btnG.className = "btn-genero";
+    const manual = generosAlunos[aluno.nome] || "";
+    const inf = generoInferido(aluno.nome);
+    btnG.textContent = manual === "f" ? "👧" : manual === "m" ? "👦" : "↔️";
+    btnG.title = manual ? (manual === "f" ? "Menina (manual) — clique para alternar" : "Menino (manual) — clique para alternar")
+      : "Auto (detectado pelo nome: " + (inf === "f" ? "menina" : inf === "m" ? "menino" : "desconhecido") + ") — clique para alternar";
+    btnG.onclick = () => {
+      const prox = manual === "" ? "f" : manual === "f" ? "m" : "";
+      if (prox) generosAlunos[aluno.nome] = prox; else delete generosAlunos[aluno.nome];
+      salvarGeneros();
+      const e = filas[diaAtual].find(x => x.nome === aluno.nome);
+      if (e && !poolDoTema(temaDoAluno(aluno.nome), generoDoNome(aluno.nome)).includes(e.carinha)) trocarAvatar(diaAtual, aluno.nome);
+      renderAlunos();
+    };
+    if (mostrarTemas) row.append(chk, nome, btnG, sel, turma); else row.append(chk, nome, turma);
     wrap.appendChild(row);
   });
 }
@@ -480,7 +543,7 @@ function criarEspiral() {
 }
 
 function novoAvatar(nome, atual) {
-  const p = poolDoTema(temaDoAluno(nome));
+  const p = poolDoTema(temaDoAluno(nome), generoDoNome(nome));
   const outros = p.filter(x => x !== atual);
   const lista = outros.length ? outros : p;
   return lista[Math.floor(Math.random() * lista.length)];
@@ -616,6 +679,10 @@ document.getElementById("modal-confirmar").onclick = () => {
 async function initDb() {
   try { db = await claude.use("db"); } catch (e) { db = null; }
   if (!db) { carregarLocal(); renderAlunos(); renderFila(); return; }
+  db.doc("config/generos").onSnapshot(
+    snap => { const d = snap.exists ? snap.data() : null; generosAlunos = (d && d.map) ? d.map : {}; renderAlunos(); },
+    err => console.error("Erro nos gêneros:", err)
+  );
   db.doc("config/temas").onSnapshot(
     snap => { const d = snap.exists ? snap.data() : null; temasAlunos = (d && d.map) ? d.map : {}; renderAlunos(); },
     err => console.error("Erro nos temas:", err)
