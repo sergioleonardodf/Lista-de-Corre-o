@@ -57,7 +57,10 @@ main { flex:1; min-width:0; padding:12px; display:grid; grid-template-columns:1f
 .fila-row.corrigido { background:var(--green); border-radius:10px; }
 .fila-row.corrigido .nome, .fila-row.corrigido .pos, .fila-row.corrigido .carinha { text-decoration:line-through; color:var(--green-text); }
 .pos { font-weight:700; min-width:28px; color:var(--muted); }
-.carinha { font-size:1.2rem; }
+:root { --avatar:3.6rem; }
+.carinha { font-size:var(--avatar); line-height:1; flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
+.carinha img { width:var(--avatar); height:var(--avatar); object-fit:cover; border-radius:50%; display:block; }
+.row select.tema { max-width:96px; padding:2px 4px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:.7rem; }
 .limpar-wrap { margin-top:14px; text-align:right; }
 button.limpar { background:none; border:1px solid var(--danger); color:var(--danger); padding:8px 14px; border-radius:10px; font-size:.85rem; font-weight:600; cursor:pointer; }
 .modal-overlay { position:fixed; inset:0; background:rgba(10,12,18,.45); display:flex; align-items:center; justify-content:center; padding:20px; z-index:50; }
@@ -91,7 +94,7 @@ header.topo h1 { font-size:clamp(1.05rem, 5vw, 1.35rem); overflow-wrap:anywhere;
 .fila-col h3 { margin:0 0 4px; padding-bottom:4px; font-size:.75rem; text-align:center; color:var(--accent); border-bottom:2px solid var(--border); text-transform:uppercase; letter-spacing:.04em; }
 .fila-dividida .row { gap:5px; padding:5px 2px; font-size:.8rem; }
 .fila-dividida .pos { min-width:22px; }
-.fila-dividida .carinha { font-size:1rem; }
+.fila-dividida .carinha { font-size:var(--avatar); }
 .fila-vazia { font-size:.75rem; color:var(--muted); text-align:center; padding:8px 0; }
   body.bloqueado header.topo, body.bloqueado .app-shell { display:none; }
 #gate { display:none; min-height:100dvh; align-items:center; justify-content:center; padding:20px; }
@@ -153,6 +156,52 @@ body.bloqueado #gate { display:flex; }
 
 <script>
 const CARINHAS = ["🤠","🥳","😜","🤗","🤩","🙃","😄","😴","😎","😃","😁","😋","🤪","😌","🤩"];
+
+// ===== TEMAS DE AVATAR =====
+// Cada tema tem "emojis" e "imagens". Em "imagens" coloque o caminho do arquivo
+// As imagens ficam na pasta "imagens-por-tema/" ao lado do index.html (mesmo repositório do GitHub).
+// O avatar sorteado para cada aluno vem só do tema escolhido para ele.
+const IMG = (pasta, arquivos) => arquivos.map(a => "imagens-por-tema/" + pasta + "/" + a);
+const THEMES = {
+  "Geral":   { emojis: CARINHAS, imagens: [] },
+  "Futebol": { emojis: ["⚽","🥅","🏆","🧤","👟","🏟️","🥇","📣"], imagens: IMG("futebol", ["futebol-01.png", "futebol-02.png", "futebol-03.jpg", "futebol-04-com-texto.png"]) },
+  "Animais": { emojis: ["🐶","🐱","🦊","🐼","🦁","🐯","🐸","🐧","🦄","🐢"], imagens: [] },
+  "Espaço":  { emojis: ["🚀","🌙","⭐","🪐","👽","☄️","🛸","🌍"], imagens: [] },
+  "Natureza":{ emojis: ["🌸","🌻","🌈","🍀","🦋","🌳","🍄","🌊"], imagens: [] },
+  "Música":  { emojis: ["🎵","🎸","🥁","🎤","🎹","🎧","🎺","🎻"], imagens: [] },
+  "Doces":   { emojis: ["🍭","🍩","🍪","🍫","🧁","🍦","🍓","🍰"], imagens: [] },
+  "Bolo": { emojis: [], imagens: IMG("bolo", ["bolo-01.png"]) },
+  "Cachorro": { emojis: [], imagens: IMG("cachorro", ["cachorro-01.png", "cachorro-02.png", "cachorro-03.jpg", "cachorro-04.jpg", "cachorro-05.jpg", "cachorro-06-com-texto.png"]) },
+  "Cobra": { emojis: [], imagens: IMG("cobra", ["cobra-01.png", "cobra-02.png", "cobra-03-com-texto.png"]) },
+  "Coelho": { emojis: [], imagens: IMG("coelho", ["coelho-01.png", "coelho-02.png", "coelho-03.jpg", "coelho-04-com-texto.png"]) },
+  "Comida": { emojis: [], imagens: IMG("comida", ["comida-01.png", "comida-02.png", "comida-03.png", "comida-04.png", "comida-05.jpg", "comida-06-com-texto.png"]) },
+  "Emoji confuso": { emojis: [], imagens: IMG("emoji-rosto-confuso", ["emoji-rosto-confuso-01.png"]) },
+  "Emoji desconfiado": { emojis: [], imagens: IMG("emoji-rosto-desconfiado", ["emoji-rosto-desconfiado-01.png", "emoji-rosto-desconfiado-02.jpg"]) },
+  "Furão": { emojis: [], imagens: IMG("furao", ["furao-01.png", "furao-02.png", "furao-03.jpg", "furao-04-com-texto.png"]) },
+  "Gato": { emojis: [], imagens: IMG("gato", ["gato-01.png", "gato-02.png", "gato-03.jpg", "gato-04-com-texto.png"]) },
+  "Ginástica rítmica": { emojis: [], imagens: IMG("ginastica-ritmica", ["ginastica-ritmica-01.png", "ginastica-ritmica-02.png", "ginastica-ritmica-03.jpg", "ginastica-ritmica-04-com-texto.png"]) },
+  "Judô": { emojis: [], imagens: IMG("judo", ["judo-01.png", "judo-02.png", "judo-03.jpg", "judo-04-com-texto.png"]) },
+  "Sorvete": { emojis: [], imagens: IMG("sorvete", ["sorvete-01.png", "sorvete-02.png", "sorvete-03.png", "sorvete-04.png", "sorvete-05.jpg", "sorvete-06.jpg", "sorvete-07-com-texto.png"]) },
+  "Squish": { emojis: [], imagens: IMG("squish", ["squish-01.png", "squish-02-com-texto.png"]) },
+  "Tartarugas": { emojis: [], imagens: IMG("tartarugas", ["tartarugas-01.png", "tartarugas-02.png", "tartarugas-03.jpg", "tartarugas-04-com-texto.png"]) },
+  "Voleibol": { emojis: [], imagens: IMG("voleibol", ["voleibol-01.png", "voleibol-02.png", "voleibol-03.jpg", "voleibol-04-com-texto.png"]) }
+};
+let temasAlunos = {}; // { NOME_DO_ALUNO: "Futebol", ... }
+const temaDoAluno = nome => (THEMES[temasAlunos[nome]] ? temasAlunos[nome] : "Geral");
+const poolDoTema = tema => {
+  const t = THEMES[tema] || THEMES["Geral"];
+  const refs = t.emojis.concat(t.imagens.map((_, i) => "@" + tema + "/" + i));
+  return refs.length ? refs : CARINHAS;
+};
+// Avatar guardado na fila: emoji literal, ou "@Tema/indice" para imagem
+function montarAvatar(ref, el) {
+  el.textContent = "";
+  if (ref && ref.charAt(0) === "@") {
+    const [tema, idx] = ref.slice(1).split("/");
+    const src = THEMES[tema] && THEMES[tema].imagens[Number(idx)];
+    if (src) { const img = document.createElement("img"); img.src = src; img.alt = ""; el.appendChild(img); }
+  } else el.textContent = ref || "";
+}
 const mk = (lista, t) => lista.map(n => ({ nome: n, turma: t }));
 const DIAS = {
   "SEGUNDA": { label: "SEGUNDA", alunos: mk(["BENTO","BERNARDO","BRUNA","DANIELA","ISABELLE","MARINA","MIGUEL BAUTE","VALENTINA FF","VALENTINA SS"], "4º") },
@@ -175,7 +224,16 @@ ORDEM_DIAS.forEach(d => { filas[d] = []; extras[d] = []; turmaAtual[d] = null; }
 let db = null;
 const writeChainFila = {}, writeChainExtras = {};
 
+function salvarTemas() {
+  try { localStorage.setItem("temas_alunos", JSON.stringify(temasAlunos)); } catch (e) {}
+  if (!db) return;
+  writeChainTemas = writeChainTemas.then(() => db.doc("config/temas").set({ map: temasAlunos }))
+    .catch(err => console.error("Erro ao salvar temas:", err));
+}
+let writeChainTemas = Promise.resolve();
+
 function carregarLocal() {
+  try { const r = localStorage.getItem("temas_alunos"); if (r) temasAlunos = JSON.parse(r); } catch (e) {}
   ORDEM_DIAS.forEach(dia => {
     try { const r = localStorage.getItem("fila_" + dia); if (r) filas[dia] = JSON.parse(r); } catch (e) {}
     try { const r = localStorage.getItem("extras_" + dia); if (r) extras[dia] = JSON.parse(r); } catch (e) {}
@@ -196,7 +254,7 @@ function salvarExtras(dia) {
     .catch(err => console.error("Erro ao salvar alunos adicionados:", err));
 }
 
-const carinhaAleatoria = () => CARINHAS[Math.floor(Math.random() * CARINHAS.length)];
+const carinhaAleatoria = nome => { const p = poolDoTema(temaDoAluno(nome)); return p[Math.floor(Math.random() * p.length)]; };
 const alunosDoDia = dia =>
   DIAS[dia].alunos
     .concat(extras[dia] || [])
@@ -253,7 +311,13 @@ function renderAlunos() {
     const turma = document.createElement("div");
     turma.className = "turma";
     turma.textContent = aluno.turma;
-    row.append(chk, nome, turma);
+    const sel = document.createElement("select");
+    sel.className = "tema";
+    sel.title = "Tema do avatar";
+    Object.keys(THEMES).forEach(t => { const o = document.createElement("option"); o.value = t; o.textContent = t; sel.appendChild(o); });
+    sel.value = temaDoAluno(aluno.nome);
+    sel.onchange = () => { temasAlunos[aluno.nome] = sel.value; salvarTemas(); };
+    row.append(chk, nome, sel, turma);
     wrap.appendChild(row);
   });
 }
@@ -271,7 +335,7 @@ function renderFila() {
     pos.textContent = posTexto;
     const carinha = document.createElement("div");
     carinha.className = "carinha";
-    carinha.textContent = entry.carinha || "";
+    montarAvatar(entry.carinha, carinha);
     const nome = document.createElement("div");
     nome.className = "nome";
     nome.textContent = entry.nome;
@@ -328,7 +392,7 @@ function onToggleAluno(nome, marcado) {
   const existe = estaNaFila(diaAtual, nome);
   if (marcado && !existe) {
     const fila = filas[diaAtual].slice();
-    const novo = { nome, carinha: carinhaAleatoria(), corrigido: false };
+    const novo = { nome, carinha: carinhaAleatoria(nome), corrigido: false };
     const primeiroCorrigido = fila.findIndex(e => e.corrigido);
     if (primeiroCorrigido === -1) fila.push(novo);
     else fila.splice(primeiroCorrigido, 0, novo);
@@ -409,6 +473,10 @@ document.getElementById("modal-confirmar").onclick = () => {
 async function initDb() {
   try { db = await claude.use("db"); } catch (e) { db = null; }
   if (!db) { carregarLocal(); renderAlunos(); renderFila(); return; }
+  db.doc("config/temas").onSnapshot(
+    snap => { const d = snap.exists ? snap.data() : null; temasAlunos = (d && d.map) ? d.map : {}; renderAlunos(); },
+    err => console.error("Erro nos temas:", err)
+  );
   ORDEM_DIAS.forEach(dia => {
     db.doc("filas/" + dia).onSnapshot(
       snap => {
