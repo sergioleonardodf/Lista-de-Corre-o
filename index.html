@@ -60,6 +60,11 @@ main { flex:1; min-width:0; padding:12px; display:grid; grid-template-columns:1f
 :root { --avatar:3.6rem; }
 .carinha { font-size:var(--avatar); line-height:1; flex:0 0 auto; display:flex; align-items:center; justify-content:center; }
 .carinha img { width:var(--avatar); height:var(--avatar); object-fit:cover; border-radius:50%; display:block; }
+.setas { display:flex; flex-direction:column; flex:0 0 auto; margin:0 2px; }
+.seta { background:none; border:none; padding:0 3px; height:13px; width:22px; line-height:0; color:var(--muted); opacity:.4; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.seta:hover, .seta:active { opacity:1; }
+.seta.vazia { visibility:hidden; pointer-events:none; }
+.seta svg { display:block; }
 .btn-olho { background:none; border:none; color:var(--muted); cursor:pointer; padding:0 4px; margin-left:4px; vertical-align:middle; line-height:1; opacity:.7; }
 .btn-olho:hover { opacity:1; }
 .btn-olho svg { display:block; }
@@ -92,7 +97,7 @@ header.topo h1 { font-size:clamp(1.05rem, 5vw, 1.35rem); overflow-wrap:anywhere;
 
 .sep-corrigidos { margin-top:10px; padding:6px 4px 4px; border-top:2px solid var(--border); font-size:.75rem; font-weight:800; letter-spacing:.06em; color:var(--green-text); text-align:center; }
 .fila-dividida { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.fila-col { min-width:0; }
+.fila-col { min-width:0; container-type:inline-size; }
 .fila-col + .fila-col { border-left:1px solid var(--border); padding-left:10px; }
 .fila-col h3 { margin:0 0 4px; padding-bottom:4px; font-size:.75rem; text-align:center; color:var(--accent); border-bottom:2px solid var(--border); text-transform:uppercase; letter-spacing:.04em; }
 .fila-dividida .row { gap:5px; padding:5px 2px; font-size:.8rem; }
@@ -108,6 +113,20 @@ body.bloqueado #gate { display:flex; }
 #gate button { padding:10px; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:var(--accent-text); font-weight:700; font-size:.95rem; cursor:pointer; }
 #gate .erro { color:var(--danger); font-size:.85rem; font-weight:600; }
 #gate .erro.hidden { display:none; }
+.fila-dividida .row .nome { overflow-wrap:break-word; }
+.carinha.clicavel { cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.carinha.girando { border-radius:50%; background:var(--chip); width:var(--avatar); height:var(--avatar); overflow:hidden; color:var(--accent); }
+.carinha.girando svg { width:100%; height:100%; animation:giro-espiral .7s linear infinite; }
+@keyframes giro-espiral { to { transform:rotate(360deg); } }
+/* Coluna estreita (celular): avatar em cima, nome embaixo */
+@container (max-width:250px) {
+  .fila-dividida .fila-row { display:grid; grid-template-columns:auto minmax(0,1fr) auto; grid-template-areas:"pos setas chk" "carinha carinha carinha" "nome nome nome"; align-items:center; column-gap:4px; row-gap:2px; padding:4px 2px; min-width:0; }
+  .fila-dividida .fila-row .pos { grid-area:pos; justify-self:start; min-width:0; }
+  .fila-dividida .fila-row .setas { grid-area:setas; justify-self:center; margin:0; }
+  .fila-dividida .fila-row > input[type="checkbox"] { grid-area:chk; justify-self:end; }
+  .fila-dividida .fila-row .carinha { grid-area:carinha; justify-self:center; }
+  .fila-dividida .fila-row .nome { grid-area:nome; text-align:center; }
+}
 </style>
 </head>
 <body class="bloqueado">
@@ -115,7 +134,7 @@ body.bloqueado #gate { display:flex; }
   <form id="gate-form">
     <h2>🔒 Lista de Correção</h2>
     <input type="password" id="gate-senha" placeholder="Senha" autocomplete="current-password">
-    <button type="submit">Entrar</button>
+    <button type="submit" id="gate-btn">Entrar</button>
     <div id="gate-erro" class="erro hidden" role="alert">Senha incorreta</div>
   </form>
 </div><header class="topo"><h1>Lista de Correção - Mr. Léo</h1></header>
@@ -338,7 +357,7 @@ function renderAlunos() {
     sel.title = "Tema do avatar";
     Object.keys(THEMES).forEach(t => { const o = document.createElement("option"); o.value = t; o.textContent = t; sel.appendChild(o); });
     sel.value = temaDoAluno(aluno.nome);
-    sel.onchange = () => { temasAlunos[aluno.nome] = sel.value; salvarTemas(); };
+    sel.onchange = () => { temasAlunos[aluno.nome] = sel.value; salvarTemas(); if (estaNaFila(diaAtual, aluno.nome)) trocarAvatar(diaAtual, aluno.nome); };
     if (mostrarTemas) row.append(chk, nome, sel, turma); else row.append(chk, nome, turma);
     wrap.appendChild(row);
   });
@@ -349,7 +368,7 @@ function renderFila() {
   wrap.innerHTML = "";
   const itens = filas[diaAtual].map((entry, idx) => ({ entry, idx }));
 
-  const criarLinha = (entry, idx, posTexto) => {
+  const criarLinha = (entry, idx, posTexto, mover) => {
     const row = document.createElement("div");
     row.className = "row fila-row" + (entry.corrigido ? " corrigido" : "");
     const pos = document.createElement("div");
@@ -357,7 +376,17 @@ function renderFila() {
     pos.textContent = posTexto;
     const carinha = document.createElement("div");
     carinha.className = "carinha";
-    montarAvatar(entry.carinha, carinha);
+    if (girando[diaAtual + "|" + entry.nome]) {
+      carinha.classList.add("girando");
+      carinha.appendChild(criarEspiral());
+    } else {
+      montarAvatar(entry.carinha, carinha);
+      if (!entry.corrigido) {
+        carinha.classList.add("clicavel");
+        carinha.title = "Clique para sortear outro avatar";
+        carinha.onclick = () => trocarAvatar(diaAtual, entry.nome);
+      }
+    }
     const nome = document.createElement("div");
     nome.className = "nome";
     nome.textContent = entry.nome;
@@ -366,7 +395,22 @@ function renderFila() {
     chk.checked = !!entry.corrigido;
     chk.title = "Dever corrigido?";
     chk.onchange = () => onToggleCorrigido(idx, chk.checked);
-    row.append(pos, carinha, nome, chk);
+    if (mover) {
+      const setas = document.createElement("div");
+      setas.className = "setas";
+      const mk = (cls, titulo, pontos, fn) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "seta" + (fn ? "" : " vazia");
+        b.title = titulo;
+        b.setAttribute("aria-label", titulo);
+        b.innerHTML = '<svg viewBox="0 0 12 8" width="10" height="7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="' + pontos + '"/></svg>';
+        if (fn) b.onclick = fn;
+        return b;
+      };
+      setas.append(mk("sobe", "Subir na fila", "2,6.5 6,2 10,6.5", mover.sobe), mk("desce", "Descer na fila", "2,1.5 6,6 10,1.5", mover.desce));
+      row.append(pos, carinha, nome, setas, chk);
+    } else row.append(pos, carinha, nome, chk);
     return row;
   };
 
@@ -374,7 +418,10 @@ function renderFila() {
   const montarLista = (lista, container) => {
     const pendentes = lista.filter(i => !i.entry.corrigido);
     const corrigidos = lista.filter(i => i.entry.corrigido);
-    pendentes.forEach((i, n) => container.appendChild(criarLinha(i.entry, i.idx, (n + 1) + "º")));
+    pendentes.forEach((i, n) => container.appendChild(criarLinha(i.entry, i.idx, (n + 1) + "º", {
+      sobe: n > 0 ? () => moverNaFila(i.idx, pendentes[n - 1].idx) : null,
+      desce: n < pendentes.length - 1 ? () => moverNaFila(i.idx, pendentes[n + 1].idx) : null
+    })));
     if (corrigidos.length) {
       const sep = document.createElement("div");
       sep.className = "sep-corrigidos";
@@ -408,6 +455,63 @@ function renderFila() {
     grid.appendChild(col);
   });
   wrap.appendChild(grid);
+}
+
+const girando = {};
+
+function criarEspiral() {
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("viewBox", "0 0 50 50");
+  let d = "";
+  for (let i = 0; i <= 120; i++) {
+    const t = (i / 120) * Math.PI * 6;
+    const r = 1.5 + t * 1.2;
+    d += (i ? "L" : "M") + (25 + r * Math.cos(t)).toFixed(1) + " " + (25 + r * Math.sin(t)).toFixed(1);
+  }
+  const path = document.createElementNS(NS, "path");
+  path.setAttribute("d", d);
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke", "currentColor");
+  path.setAttribute("stroke-width", "2.6");
+  path.setAttribute("stroke-linecap", "round");
+  svg.appendChild(path);
+  return svg;
+}
+
+function novoAvatar(nome, atual) {
+  const p = poolDoTema(temaDoAluno(nome));
+  const outros = p.filter(x => x !== atual);
+  const lista = outros.length ? outros : p;
+  return lista[Math.floor(Math.random() * lista.length)];
+}
+
+// Gira a espiral por 1,5s (simulando um sorteio) e então troca o avatar do aluno na fila
+function trocarAvatar(dia, nome) {
+  const chave = dia + "|" + nome;
+  if (girando[chave]) return;
+  girando[chave] = true;
+  if (dia === diaAtual) renderFila();
+  setTimeout(() => {
+    delete girando[chave];
+    const fila = filas[dia].slice();
+    const i = fila.findIndex(e => e.nome === nome);
+    if (i !== -1) {
+      fila[i] = Object.assign({}, fila[i], { carinha: novoAvatar(nome, fila[i].carinha) });
+      filas[dia] = fila;
+      salvarFila(dia);
+    }
+    if (dia === diaAtual) renderFila();
+  }, 1500);
+}
+
+function moverNaFila(a, b) {
+  const fila = filas[diaAtual].slice();
+  if (!fila[a] || !fila[b]) return;
+  const t = fila[a]; fila[a] = fila[b]; fila[b] = t;
+  filas[diaAtual] = fila;
+  renderFila();
+  salvarFila(diaAtual);
 }
 
 function onToggleAluno(nome, marcado) {
@@ -538,9 +642,60 @@ async function initDb() {
 
 const SENHA_HASH = "f9cae0b0d0280218556b95d7e57a465563690b3cde648bcbcf6b17eed203baad";
 
+// SHA-256 em JS puro (usado quando o navegador/iframe não libera crypto.subtle)
+function sha256js(ascii) {
+  const rr = (v, a) => (v >>> a) | (v << (32 - a));
+  const mp = Math.pow, mx = mp(2, 32);
+  let result = "";
+  const words = [];
+  const bitLen = ascii.length * 8;
+  let hash = [], k = [];
+  const comp = {};
+  for (let c = 2; k.length < 64; c++) {
+    if (!comp[c]) {
+      for (let i = 0; i < 313; i += c) comp[i] = c;
+      hash[k.length] = (mp(c, .5) * mx) | 0;
+      k[k.length] = (mp(c, 1 / 3) * mx) | 0;
+    }
+  }
+  ascii += "\x80";
+  while (ascii.length % 64 - 56) ascii += "\x00";
+  for (let i = 0; i < ascii.length; i++) {
+    const j = ascii.charCodeAt(i);
+    words[i >> 2] |= j << ((3 - i) % 4) * 8;
+  }
+  words[words.length] = (bitLen / mx) | 0;
+  words[words.length] = bitLen;
+  for (let j = 0; j < words.length;) {
+    const w = words.slice(j, j += 16);
+    const old = hash;
+    hash = hash.slice(0, 8);
+    for (let i = 0; i < 64; i++) {
+      const w15 = w[i - 15], w2 = w[i - 2];
+      const a = hash[0], e = hash[4];
+      const t1 = hash[7] + (rr(e, 6) ^ rr(e, 11) ^ rr(e, 25)) + ((e & hash[5]) ^ (~e & hash[6])) + k[i]
+        + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rr(w15, 7) ^ rr(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rr(w2, 17) ^ rr(w2, 19) ^ (w2 >>> 10))) | 0);
+      const t2 = (rr(a, 2) ^ rr(a, 13) ^ rr(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+      hash = [(t1 + t2) | 0].concat(hash);
+      hash[4] = (hash[4] + t1) | 0;
+    }
+    for (let i = 0; i < 8; i++) hash[i] = (hash[i] + old[i]) | 0;
+  }
+  for (let i = 0; i < 8; i++) for (let j = 3; j + 1; j--) {
+    const b = (hash[i] >> (j * 8)) & 255;
+    result += ((b < 16) ? 0 : "") + b.toString(16);
+  }
+  return result;
+}
+
 async function sha256(texto) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(texto));
-  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+  try {
+    if (window.crypto && crypto.subtle) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(texto));
+      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+  } catch (err) {}
+  return sha256js(unescape(encodeURIComponent(texto)));
 }
 
 let appIniciado = false;
@@ -555,8 +710,7 @@ function iniciarApp() {
   else { carregarLocal(); renderAlunos(); renderFila(); }
 }
 
-document.getElementById("gate-form").addEventListener("submit", async e => {
-  e.preventDefault();
+async function tentarEntrar() {
   const campo = document.getElementById("gate-senha");
   const erro = document.getElementById("gate-erro");
   let ok = false;
@@ -569,6 +723,11 @@ document.getElementById("gate-form").addEventListener("submit", async e => {
     campo.value = "";
     campo.focus();
   }
+}
+document.getElementById("gate-form").addEventListener("submit", e => { e.preventDefault(); });
+document.getElementById("gate-btn").addEventListener("click", e => { e.preventDefault(); tentarEntrar(); });
+document.getElementById("gate-senha").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); tentarEntrar(); }
 });
 
 try {
