@@ -164,27 +164,27 @@ const CARINHAS = ["🤠","🥳","😜","🤗","🤩","🙃","😄","😴","😎"
 const IMG = (pasta, arquivos) => arquivos.map(a => "imagens-por-tema/" + pasta + "/" + a);
 const THEMES = {
   "Geral":   { emojis: CARINHAS, imagens: [] },
-  "Futebol": { emojis: ["⚽","🥅","🏆","🧤","👟","🏟️","🥇","📣"], imagens: IMG("futebol", ["futebol-01.png", "futebol-02.png", "futebol-03.jpg", "futebol-04-com-texto.png"]) },
+  "Futebol": { emojis: ["⚽","🥅","🏆","🧤","👟","🏟️","🥇","📣"], imagens: IMG("futebol", ["futebol-01.png", "futebol-02.png", "futebol-03.jpg"]) },
   "Animais": { emojis: ["🐶","🐱","🦊","🐼","🦁","🐯","🐸","🐧","🦄","🐢"], imagens: [] },
   "Espaço":  { emojis: ["🚀","🌙","⭐","🪐","👽","☄️","🛸","🌍"], imagens: [] },
   "Natureza":{ emojis: ["🌸","🌻","🌈","🍀","🦋","🌳","🍄","🌊"], imagens: [] },
   "Música":  { emojis: ["🎵","🎸","🥁","🎤","🎹","🎧","🎺","🎻"], imagens: [] },
   "Doces":   { emojis: ["🍭","🍩","🍪","🍫","🧁","🍦","🍓","🍰"], imagens: [] },
   "Bolo": { emojis: [], imagens: IMG("bolo", ["bolo-01.png"]) },
-  "Cachorro": { emojis: [], imagens: IMG("cachorro", ["cachorro-01.png", "cachorro-02.png", "cachorro-03.jpg", "cachorro-04.jpg", "cachorro-05.jpg", "cachorro-06-com-texto.png"]) },
-  "Cobra": { emojis: [], imagens: IMG("cobra", ["cobra-01.png", "cobra-02.png", "cobra-03-com-texto.png"]) },
-  "Coelho": { emojis: [], imagens: IMG("coelho", ["coelho-01.png", "coelho-02.png", "coelho-03.jpg", "coelho-04-com-texto.png"]) },
-  "Comida": { emojis: [], imagens: IMG("comida", ["comida-01.png", "comida-02.png", "comida-03.png", "comida-04.png", "comida-05.jpg", "comida-06-com-texto.png"]) },
+  "Cachorro": { emojis: [], imagens: IMG("cachorro", ["cachorro-01.png", "cachorro-02.png", "cachorro-03.jpg", "cachorro-04.jpg", "cachorro-05.jpg"]) },
+  "Cobra": { emojis: [], imagens: IMG("cobra", ["cobra-01.png", "cobra-02.png"]) },
+  "Coelho": { emojis: [], imagens: IMG("coelho", ["coelho-01.png", "coelho-02.png", "coelho-03.jpg"]) },
+  "Comida": { emojis: [], imagens: IMG("comida", ["comida-01.png", "comida-02.png", "comida-03.png", "comida-04.png", "comida-05.jpg"]) },
   "Emoji confuso": { emojis: [], imagens: IMG("emoji-rosto-confuso", ["emoji-rosto-confuso-01.png"]) },
   "Emoji desconfiado": { emojis: [], imagens: IMG("emoji-rosto-desconfiado", ["emoji-rosto-desconfiado-01.png", "emoji-rosto-desconfiado-02.jpg"]) },
-  "Furão": { emojis: [], imagens: IMG("furao", ["furao-01.png", "furao-02.png", "furao-03.jpg", "furao-04-com-texto.png"]) },
-  "Gato": { emojis: [], imagens: IMG("gato", ["gato-01.png", "gato-02.png", "gato-03.jpg", "gato-04-com-texto.png"]) },
-  "Ginástica rítmica": { emojis: [], imagens: IMG("ginastica-ritmica", ["ginastica-ritmica-01.png", "ginastica-ritmica-02.png", "ginastica-ritmica-03.jpg", "ginastica-ritmica-04-com-texto.png"]) },
-  "Judô": { emojis: [], imagens: IMG("judo", ["judo-01.png", "judo-02.png", "judo-03.jpg", "judo-04-com-texto.png"]) },
-  "Sorvete": { emojis: [], imagens: IMG("sorvete", ["sorvete-01.png", "sorvete-02.png", "sorvete-03.png", "sorvete-04.png", "sorvete-05.jpg", "sorvete-06.jpg", "sorvete-07-com-texto.png"]) },
-  "Squish": { emojis: [], imagens: IMG("squish", ["squish-01.png", "squish-02-com-texto.png"]) },
-  "Tartarugas": { emojis: [], imagens: IMG("tartarugas", ["tartarugas-01.png", "tartarugas-02.png", "tartarugas-03.jpg", "tartarugas-04-com-texto.png"]) },
-  "Voleibol": { emojis: [], imagens: IMG("voleibol", ["voleibol-01.png", "voleibol-02.png", "voleibol-03.jpg", "voleibol-04-com-texto.png"]) }
+  "Furão": { emojis: [], imagens: IMG("furao", ["furao-01.png", "furao-02.png", "furao-03.jpg"]) },
+  "Gato": { emojis: [], imagens: IMG("gato", ["gato-01.png", "gato-02.png", "gato-03.jpg"]) },
+  "Ginástica rítmica": { emojis: [], imagens: IMG("ginastica-ritmica", ["ginastica-ritmica-01.png", "ginastica-ritmica-02.png", "ginastica-ritmica-03.jpg"]) },
+  "Judô": { emojis: [], imagens: IMG("judo", ["judo-01.png", "judo-02.png", "judo-03.jpg"]) },
+  "Sorvete": { emojis: [], imagens: IMG("sorvete", ["sorvete-01.png", "sorvete-02.png", "sorvete-03.png", "sorvete-04.png", "sorvete-05.jpg", "sorvete-06.jpg"]) },
+  "Squish": { emojis: [], imagens: IMG("squish", ["squish-01.png"]) },
+  "Tartarugas": { emojis: [], imagens: IMG("tartarugas", ["tartarugas-01.png", "tartarugas-02.png", "tartarugas-03.jpg"]) },
+  "Voleibol": { emojis: [], imagens: IMG("voleibol", ["voleibol-01.png", "voleibol-02.png", "voleibol-03.jpg"]) }
 };
 let temasAlunos = {}; // { NOME_DO_ALUNO: "Futebol", ... }
 const temaDoAluno = nome => (THEMES[temasAlunos[nome]] ? temasAlunos[nome] : "Geral");
