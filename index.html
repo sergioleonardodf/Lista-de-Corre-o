@@ -515,13 +515,13 @@ function renderAlunos() {
     sel.value = temaAtual;
     sel.title = "Tema do avatar: " + temaAtual;
     sel.onchange = () => { temasAlunos[aluno.nome] = sel.value; salvarTemas(); if (estaNaFila(diaAtual, aluno.nome)) trocarAvatar(diaAtual, aluno.nome); };
-    // Botão de gênero: ↔️ = Auto (pelo nome), 👧 = menina, 👦 = menino. Cada clique avança: Auto → 👧 → 👦 → Auto
+    // Botão de gênero: ⇄ = Auto (pelo nome), ♀️ = menina, ♂️ = menino. Cada clique avança: Auto → ♀️ → ♂️ → Auto
     const btnG = document.createElement("button");
     btnG.type = "button";
     btnG.className = "btn-genero";
     const manual = generosAlunos[aluno.nome] || "";
     const inf = generoInferido(aluno.nome);
-    btnG.textContent = manual === "f" ? "👱‍♀️" : manual === "m" ? "👦" : "↔️";
+    btnG.textContent = manual === "f" ? "♀️" : manual === "m" ? "♂️" : "⇄";
     btnG.title = manual ? (manual === "f" ? "Menina (manual) — clique para alternar" : "Menino (manual) — clique para alternar")
       : "Auto (detectado pelo nome: " + (inf === "f" ? "menina" : inf === "m" ? "menino" : "desconhecido") + ") — clique para alternar";
     btnG.onclick = () => {
