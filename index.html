@@ -687,7 +687,7 @@ function novoAvatar(nome, atual) {
   return sortearSemRepetir(nome, atual);
 }
 
-// Gira a espiral por 1,5s (simulando um sorteio) e então troca o avatar do aluno na fila
+// Gira a espiral por 1,0s (simulando um sorteio) e então troca o avatar do aluno na fila
 function trocarAvatar(dia, nome) {
   const chave = dia + "|" + nome;
   if (girando[chave]) return;
@@ -703,7 +703,7 @@ function trocarAvatar(dia, nome) {
       salvarFila(dia);
     }
     if (dia === diaAtual) renderFila();
-  }, 1500);
+  }, 1000);
 }
 
 function moverNaFila(a, b) {
