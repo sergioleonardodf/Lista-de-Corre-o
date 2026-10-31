@@ -449,8 +449,7 @@ function salvarExtras(dia) {
     .catch(err => console.error("Erro ao salvar alunos adicionados:", err));
 }
 
-const carinhaAleatoria = nome => { const p = poolDoAluno(nome); return p[Math.floor(Math.random() * p.length)]; };
-const alunosDoDia = dia =>
+const carinhaAleatoria = nome => { delete avatarCiclo[nome]; return sortearSemRepetir(nome, null); };const alunosDoDia = dia =>
   DIAS[dia].alunos
     .concat(extras[dia] || [])
     .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" }));
@@ -663,11 +662,29 @@ function criarEspiral() {
   return svg;
 }
 
+// Guarda, por aluno, os avatares já sorteados no ciclo atual
+const avatarCiclo = {};
+
+function sortearSemRepetir(nome, atual) {
+  const pool = poolDoAluno(nome);
+  // ignora avatares que não pertencem mais ao pool (ex.: mudou o gênero/tema)
+  let usados = (avatarCiclo[nome] || []).filter(x => pool.includes(x));
+  if (atual && pool.includes(atual) && !usados.includes(atual)) usados.push(atual);
+  let disponiveis = pool.filter(x => !usados.includes(x));
+  if (!disponiveis.length) {
+    // todos já saíram: começa um novo ciclo (sem repetir o avatar atual em seguida)
+    usados = (atual && pool.includes(atual)) ? [atual] : [];
+    disponiveis = pool.filter(x => !usados.includes(x));
+    if (!disponiveis.length) disponiveis = pool.slice();
+  }
+  const escolhido = disponiveis[Math.floor(Math.random() * disponiveis.length)];
+  usados.push(escolhido);
+  avatarCiclo[nome] = usados;
+  return escolhido;
+}
+
 function novoAvatar(nome, atual) {
-  const p = poolDoAluno(nome);
-  const outros = p.filter(x => x !== atual);
-  const lista = outros.length ? outros : p;
-  return lista[Math.floor(Math.random() * lista.length)];
+  return sortearSemRepetir(nome, atual);
 }
 
 // Gira a espiral por 1,5s (simulando um sorteio) e então troca o avatar do aluno na fila
