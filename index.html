@@ -578,8 +578,15 @@ function renderAlunos() {
       renderAlunos();
     };
 
-    if (mostrarTemas) row.append(chk, nome, btnG, turma, faltaWrap);
-    else row.append(chk, nome, turma, faltaWrap);
+    // Aluno marcado como falta não pode ser incluído na fila pela lista normal.
+    // O controle "F" permanece visível para devolver o aluno à lista.
+    if (mostrarTemas) {
+      if (!faltou) row.append(chk);
+      row.append(nome, btnG, turma, faltaWrap);
+    } else {
+      if (!faltou) row.append(chk);
+      row.append(nome, turma, faltaWrap);
+    }
     if (faltou) row.classList.add("faltou");
     wrap.appendChild(row);
   };
