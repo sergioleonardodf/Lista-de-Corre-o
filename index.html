@@ -185,36 +185,13 @@ body.bloqueado #gate { display:flex; }
 </div><header class="topo"><h1>Lista de Correção - Mr. Léo</h1></header>
 <div class="app-shell">
   <aside class="sidebar">
-        <div id="tabs">
-          <button class="tab active">Alunos</button>
-          <button class="tab">Fila</button>
-        </div>
+        <div id="tabs"></div>
   </aside>
   <main>
     <section class="card">
       <h2>Alunos<button type="button" id="btn-olho" class="btn-olho" title="Mostrar/ocultar gênero dos alunos" aria-label="Mostrar ou ocultar gênero dos alunos"></button></h2>
       <div id="subtabs" class="subtabs hidden"></div>
-      <div id="lista-alunos">
-        <!-- Demonstração de Alunos com Boobie Goods -->
-        <div class="row com-temas">
-          <div class="carinha clicavel"><img src="boobiegoods_valentina.png" alt="Avatar Valentina SS"></div>
-          <div class="nome"><span class="nome-primeiro">Valentina</span> <span class="nome-restante">SS</span></div>
-          <div class="turma">4º</div>
-          <select class="tema"><option>Boobie Goods</option></select>
-        </div>
-        <div class="row com-temas">
-          <div class="carinha clicavel"><img src="boobiegoods_bear.png" alt="Avatar Ursinho"></div>
-          <div class="nome">Ursinho</div>
-          <div class="turma">5º</div>
-          <select class="tema"><option>Boobie Goods</option></select>
-        </div>
-        <div class="row com-temas">
-          <div class="carinha clicavel"><img src="boobiegoods_rabbit.png" alt="Avatar Coelhinho"></div>
-          <div class="nome">Coelhinho</div>
-          <div class="turma">4º</div>
-          <select class="tema"><option>Boobie Goods</option></select>
-        </div>
-      </div>
+      <div id="lista-alunos"></div>
       <div class="add-aluno">
         <input type="text" id="novo-aluno-nome" placeholder="Nome do aluno">
         <select id="novo-aluno-turma">
@@ -228,21 +205,7 @@ body.bloqueado #gate { display:flex; }
     </section>
     <section class="card">
       <h2>Fila de Correção</h2>
-      <div id="lista-fila">
-        <!-- Demonstração de Fila com Boobie Goods -->
-        <div class="fila-dividida">
-          <div class="fila-col">
-            <h3>Fila Principal</h3>
-            <div class="fila-row">
-              <div class="pos">1</div>
-              <div class="carinha clicavel"><img src="boobiegoods_valentina.png" alt="Avatar Valentina SS"></div>
-              <div class="nome">Valentina SS</div>
-              <input type="checkbox">
-              <div class="setas"><button class="seta vazio"></button><button class="seta"></button></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div id="lista-fila"></div>
       <div class="limpar-wrap"><button class="limpar" id="btn-limpar">Limpar Fila</button></div>
     </section>
   </main>
@@ -259,16 +222,8 @@ body.bloqueado #gate { display:flex; }
 </div>
 
 <script>
-//===== TEMAS DE AVATAR =====
-// Cada tema tem "emojis" e "imagens". Em "imagens" coloque o caminho do arquivo
-// O avatar sorteado para cada aluno vem só do tema escolhido para ele.
-const IMGDATA = {
-  "Boobie Goods": [
-    "boobiegoods_valentina.png",
-    "boobiegoods_bear.png",
-    "boobiegoods_rabbit.png"
-  ],
-  // Outros temas existentes...
+const CARINHAS = ["🤠","🥳","😜","🤗","🤩","🙃","😄","😴","😎","😃","😁","😋","🤪","😌"];
+
 // ===== TEMAS DE AVATAR =====
 // Cada tema tem "emojis" e "imagens". Em "imagens" coloque o caminho do arquivo
 // O avatar sorteado para cada aluno vem só do tema escolhido para ele.
